@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "147400410382",
+    "project_id": "clicktorun-442be",
+    "storage_bucket": "clicktorun-442be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147400410382:android:3ee5af9d8cc65d18f1435f",
+        "android_client_info": {
+          "package_name": "com.example.clicktorun"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "147400410382-lkfcafr0j71sn7v9c3159s7i5th3q3pg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.clicktorun",
+            "certificate_hash": "c83f7136ff184db15968f84e5d37dd71b8fb5e2b"
+          }
+        },
+        {
+          "client_id": "147400410382-9dl0po95pihoppm6aem847q7s9mp2jue.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPLn2zRGYl7zjj8RkdhEzQaG5-F0yNC3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "147400410382-9dl0po95pihoppm6aem847q7s9mp2jue.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
