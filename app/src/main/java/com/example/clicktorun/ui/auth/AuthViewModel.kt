@@ -12,8 +12,14 @@ class AuthViewModel : ViewModel() {
     val authState: LiveData<AuthState>
         get() = _authState
 
-    fun logIn(email: String?, password: String?) {
-        if (!validateLoginFields(email, password)) return
+    var email: String? = null
+    var password: String? = null
+    var confirmPassword: String? = null
+
+    fun logIn() {
+        val emailCheck = !validateEmailFields(email)
+        val passwordCheck = !validatePasswordFields(password, null)
+        if (emailCheck || passwordCheck) return
         _authState.postValue(AuthState.Loading)
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener { task ->
@@ -25,8 +31,10 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun signUp(email: String?, password: String?, confirmPassword: String?) {
-        if (!validateSignUpFields(email, password, confirmPassword)) return
+    fun signUp() {
+        val emailCheck = !validateEmailFields(email)
+        val passwordCheck = !validatePasswordFields(password, confirmPassword, true)
+        if (emailCheck || passwordCheck) return
         _authState.postValue(AuthState.Loading)
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener { task ->
@@ -38,46 +46,41 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun sendPasswordResetLinkToEmail(email: String?) {
+    fun sendPasswordResetLinkToEmail() {
+        if (!validateEmailFields(email)) return
         _authState.postValue(AuthState.Loading)
-        if (!validateForgetPasswordFields(email)) return
         FirebaseAuth.getInstance().sendPasswordResetEmail(email!!)
         _authState.postValue(AuthState.Success)
     }
 
-    private fun validateForgetPasswordFields(email: String?): Boolean {
+    private fun validateEmailFields(email: String?): Boolean {
         if (email.isNullOrEmpty()) return _authState.run {
-            postValue(AuthState.InvalidEmail("Email address is required!"))
+            value = AuthState.InvalidEmail("Email address is required!")
             false
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) return _authState.run {
-            postValue(AuthState.InvalidEmail("Please input a valid email address!"))
+            value = AuthState.InvalidEmail("Please input a valid email address!")
             false
         }
         return true
     }
 
-    private fun validateLoginFields(email: String?, password: String?): Boolean {
-        if (!validateForgetPasswordFields(email)) return false
-        if (password.isNullOrEmpty()) return _authState.run {
-            postValue(AuthState.InvalidPassword("Password is required!"))
-            false
-        }
-        return true
-    }
-
-    private fun validateSignUpFields(
-        email: String?,
+    private fun validatePasswordFields(
         password: String?,
-        confirmPassword: String?
+        confirmPassword: String?,
+        checkLength: Boolean = false
     ): Boolean {
-        if (!validateLoginFields(email, password)) return false
-        if (password!!.length <= 6) return _authState.run {
-            postValue(AuthState.InvalidPassword("Password length must be greater than 6 characters!"))
+        if (password.isNullOrEmpty()) return _authState.run {
+            value = AuthState.InvalidPassword("Password is required!")
+            false
+        }
+        if (!checkLength) return true
+        if (password.length <= 6) return _authState.run {
+            value = AuthState.InvalidPassword("Password must at least be 7 characters long!")
             false
         }
         if (password != confirmPassword) return _authState.run {
-            postValue(AuthState.InvalidConfirmPassword("Passwords do not match!"))
+            value = AuthState.InvalidConfirmPassword("Passwords do not match!")
             false
         }
         return true

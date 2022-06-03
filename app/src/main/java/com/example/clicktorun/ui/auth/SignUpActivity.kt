@@ -1,5 +1,6 @@
 package com.example.clicktorun.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -18,40 +19,63 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpViews()
         setUpListeners()
+    }
+
+    private fun setUpViews() {
+        authViewModel.email?.let {
+            binding.emailInput.editText?.setText(it)
+        }
+        authViewModel.password?.let {
+            binding.passwordInput.editText?.setText(it)
+        }
+        authViewModel.confirmPassword?.let {
+            binding.confirmPasswordInput.editText?.setText(it)
+        }
     }
 
     private fun setUpListeners() {
         binding.apply {
             toolbar.setNavigationOnClickListener { finish() }
-            linkLogin.setOnClickListener { finish() }
+            linkLogin.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this@SignUpActivity,
+                        LoginActivity::class.java
+                    )
+                )
+            }
             emailInput.editText?.addTextChangedListener {
                 emailInput.isErrorEnabled = false
+                authViewModel.email = it.toString()
             }
             passwordInput.editText?.addTextChangedListener {
                 passwordInput.isErrorEnabled = false
+                confirmPasswordInput.isErrorEnabled = false
+                authViewModel.password = it.toString()
             }
             confirmPasswordInput.editText?.addTextChangedListener {
                 confirmPasswordInput.isErrorEnabled = false
+                passwordInput.isErrorEnabled = false
+                authViewModel.confirmPassword = it.toString()
             }
-            btnSignUp.setOnClickListener {
-                val email = emailInput.editText?.text?.toString()
-                val password = passwordInput.editText?.text?.toString()
-                val confirmPassword = confirmPasswordInput.editText?.text?.toString()
-                authViewModel.signUp(email, password, confirmPassword)
-            }
+            btnSignUp.setOnClickListener { authViewModel.signUp() }
         }
         authViewModel.authState.observe(this) {
             when (it) {
-                is AuthViewModel.AuthState.Loading -> {
-                    binding.progress.visibility = View.VISIBLE
+                is AuthViewModel.AuthState.Loading -> binding.apply {
+                    progress.visibility = View.VISIBLE
+                    overlay.visibility = View.VISIBLE
                 }
-                is AuthViewModel.AuthState.Success -> {
-                    binding.progress.visibility = View.GONE
+                is AuthViewModel.AuthState.Success -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
                     createSnackbar()
                 }
-                is AuthViewModel.AuthState.Failure -> {
-                    binding.progress.visibility = View.GONE
+                is AuthViewModel.AuthState.Failure -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
                     Snackbar.make(
                         binding.root,
                         it.message ?: "Unknown error has occurred",
@@ -61,33 +85,37 @@ class SignUpActivity : AppCompatActivity() {
                         show()
                     }
                 }
-                is AuthViewModel.AuthState.InvalidEmail -> {
-                    binding.progress.visibility = View.GONE
-                    binding.emailInput.apply {
+                is AuthViewModel.AuthState.InvalidEmail -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
+                    emailInput.apply {
                         isErrorEnabled = true
                         error = it.message
                     }
                 }
-                is AuthViewModel.AuthState.InvalidPassword -> {
-                    binding.progress.visibility = View.GONE
-                    binding.passwordInput.apply {
+                is AuthViewModel.AuthState.InvalidPassword -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
+                    passwordInput.apply {
                         isErrorEnabled = true
                         error = it.message
                     }
                 }
-                is AuthViewModel.AuthState.InvalidConfirmPassword -> {
-                    binding.progress.visibility = View.GONE
-                    binding.confirmPasswordInput.apply {
+                is AuthViewModel.AuthState.InvalidConfirmPassword -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
+                    confirmPasswordInput.apply {
                         isErrorEnabled = true
                         error = it.message
                     }
-                    binding.passwordInput.apply {
+                    passwordInput.apply {
                         isErrorEnabled = true
                         error = it.message
                     }
                 }
-                else -> {
-                    binding.progress.visibility = View.GONE
+                else -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
                 }
             }
         }
@@ -113,7 +141,6 @@ class SignUpActivity : AppCompatActivity() {
                         3000
                     )
                 }
-
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
                     finish()

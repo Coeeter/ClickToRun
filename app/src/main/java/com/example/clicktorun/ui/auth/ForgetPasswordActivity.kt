@@ -1,11 +1,11 @@
 package com.example.clicktorun.ui.auth
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityForgetPasswordBinding
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -19,43 +19,57 @@ class ForgetPasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityForgetPasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpViews()
         setUpListeners()
+    }
+
+    private fun setUpViews() {
+        authViewModel.email?.let {
+            binding.emailInput.editText?.setText(it)
+        }
     }
 
     private fun setUpListeners() {
         binding.apply {
             toolbar.setNavigationOnClickListener { finish() }
             linkSignUp.setOnClickListener {
-                Intent(this@ForgetPasswordActivity, SignUpActivity::class.java).let {
-                    startActivity(it)
-                }
+                startActivity(
+                    Intent(
+                        this@ForgetPasswordActivity,
+                        SignUpActivity::class.java
+                    )
+                )
             }
             emailInput.editText?.addTextChangedListener {
                 emailInput.isErrorEnabled = false
+                authViewModel.email = it.toString()
             }
             btnSendEmail.setOnClickListener {
-                val email = emailInput.editText?.text?.toString()
-                authViewModel.sendPasswordResetLinkToEmail(email)
+                authViewModel.sendPasswordResetLinkToEmail()
             }
         }
         authViewModel.authState.observe(this) {
             when (it) {
-                is AuthViewModel.AuthState.Loading -> {
-                    binding.progress.visibility = View.VISIBLE
+                is AuthViewModel.AuthState.Loading -> binding.apply {
+                    progress.visibility = View.VISIBLE
+                    overlay.visibility = View.VISIBLE
                 }
-                is AuthViewModel.AuthState.Success -> {
-                    binding.progress.visibility = View.GONE
+                is AuthViewModel.AuthState.Success -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
                     createSnackbar()
                 }
-                is AuthViewModel.AuthState.InvalidEmail -> {
-                    binding.progress.visibility = View.GONE
-                    binding.emailInput.apply {
+                is AuthViewModel.AuthState.InvalidEmail -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
+                    emailInput.apply {
                         isErrorEnabled = true
                         error = it.message
                     }
                 }
-                else -> {
-                    binding.progress.visibility = View.GONE
+                else -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
                 }
             }
         }
@@ -73,15 +87,13 @@ class ForgetPasswordActivity : AppCompatActivity() {
                     super.onShown(transientBottomBar)
                     Handler(mainLooper).postDelayed(
                         {
-                            if (
-                                !this@ForgetPasswordActivity.isFinishing ||
+                            if (!this@ForgetPasswordActivity.isFinishing ||
                                 !this@ForgetPasswordActivity.isDestroyed
                             ) finish()
                         },
                         3000
                     )
                 }
-
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
                     finish()

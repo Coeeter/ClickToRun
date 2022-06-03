@@ -7,8 +7,8 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.databinding.ActivityLoginBinding
+import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.Constants.Companion.ACTION_ANIMATE_LOGIN_PAGE
 import com.google.android.material.snackbar.Snackbar
 
@@ -21,47 +21,68 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         animateScreen()
+        setUpViews()
         setUpListeners()
+    }
+
+    private fun setUpViews() {
+        authViewModel.email?.let {
+            binding.emailInput.editText?.setText(it)
+        }
+        authViewModel.password?.let {
+            binding.passwordInput.editText?.setText(it)
+        }
     }
 
     private fun setUpListeners() {
         binding.apply {
             emailInput.editText?.addTextChangedListener {
                 emailInput.isErrorEnabled = false
+                authViewModel.email = it.toString()
             }
             passwordInput.editText?.addTextChangedListener {
                 passwordInput.isErrorEnabled = false
+                authViewModel.password = it.toString()
             }
-            btnLogin.setOnClickListener {
-                val email = emailInput.editText?.text?.toString()
-                val password = passwordInput.editText?.text?.toString()
-                authViewModel.logIn(email, password)
-            }
+            btnLogin.setOnClickListener { authViewModel.logIn() }
             linkSignUp.setOnClickListener {
-                Intent(this@LoginActivity, SignUpActivity::class.java).also {
-                    startActivity(it)
-                }
+                startActivity(
+                    Intent(
+                        this@LoginActivity,
+                        SignUpActivity::class.java
+                    )
+                )
             }
             linkForgetPassword.setOnClickListener {
-                Intent(this@LoginActivity, ForgetPasswordActivity::class.java).also {
-                    startActivity(it)
-                }
+                startActivity(
+                    Intent(
+                        this@LoginActivity,
+                        ForgetPasswordActivity::class.java
+                    )
+                )
             }
         }
         authViewModel.authState.observe(this) {
             when (it) {
-                is AuthViewModel.AuthState.Loading -> {
-                    binding.progress.visibility = View.VISIBLE
+                is AuthViewModel.AuthState.Loading -> binding.apply {
+                    progress.visibility = View.VISIBLE
+                    overlay.visibility = View.VISIBLE
                 }
-                is AuthViewModel.AuthState.Success -> {
-                    binding.progress.visibility = View.GONE
-                    Intent(this, MainActivity::class.java).run {
+                is AuthViewModel.AuthState.Success -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
+                    Intent(
+                        this@LoginActivity,
+                        MainActivity::class.java
+                    ).run {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(this)
                         finish()
                     }
                 }
-                is AuthViewModel.AuthState.Failure -> {
-                    binding.progress.visibility = View.GONE
+                is AuthViewModel.AuthState.Failure -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
                     Snackbar.make(
                         binding.root,
                         it.message ?: "Unknown error has occurred",
@@ -71,22 +92,25 @@ class LoginActivity : AppCompatActivity() {
                         show()
                     }
                 }
-                is AuthViewModel.AuthState.InvalidEmail -> {
-                    binding.progress.visibility = View.GONE
-                    binding.emailInput.apply {
+                is AuthViewModel.AuthState.InvalidEmail -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
+                    emailInput.apply {
                         isErrorEnabled = true
                         error = it.message
                     }
                 }
-                is AuthViewModel.AuthState.InvalidPassword -> {
-                    binding.progress.visibility = View.GONE
-                    binding.passwordInput.apply {
+                is AuthViewModel.AuthState.InvalidPassword -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
+                    passwordInput.apply {
                         isErrorEnabled = true
                         error = it.message
                     }
                 }
-                else -> {
-                    binding.progress.visibility = View.GONE
+                else -> binding.apply {
+                    progress.visibility = View.GONE
+                    overlay.visibility = View.GONE
                 }
             }
         }
