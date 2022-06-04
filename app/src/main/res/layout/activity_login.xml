@@ -94,14 +94,14 @@
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/custom_button_background"
             android:text="Login"
             android:textAllCaps="false"
             app:backgroundTint="@null"
             app:layout_constraintEnd_toEndOf="@id/passwordInput"
             app:layout_constraintStart_toStartOf="@id/emailInput"
-            app:layout_constraintTop_toBottomOf="@id/passwordInput" />
+            app:layout_constraintTop_toBottomOf="@id/linkForgetPassword" />
 
         <TextView
             android:id="@+id/linkSignUp"

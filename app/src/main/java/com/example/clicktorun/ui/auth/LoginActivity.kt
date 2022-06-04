@@ -10,6 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityLoginBinding
 import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.Constants.Companion.ACTION_ANIMATE_LOGIN_PAGE
+import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.Snackbar
 
 class LoginActivity : AppCompatActivity() {
@@ -46,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
             }
             btnLogin.setOnClickListener { authViewModel.logIn() }
             linkSignUp.setOnClickListener {
-                startActivity(
+                startActivityWithAnimation(
                     Intent(
                         this@LoginActivity,
                         SignUpActivity::class.java
@@ -54,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
                 )
             }
             linkForgetPassword.setOnClickListener {
-                startActivity(
+                startActivityWithAnimation(
                     Intent(
                         this@LoginActivity,
                         ForgetPasswordActivity::class.java
@@ -76,7 +77,7 @@ class LoginActivity : AppCompatActivity() {
                         MainActivity::class.java
                     ).run {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(this)
+                        startActivityWithAnimation(this)
                         finish()
                     }
                 }

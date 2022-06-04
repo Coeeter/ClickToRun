@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivitySignUpBinding
+import com.example.clicktorun.utils.endActivityWithAnimation
+import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
@@ -39,11 +41,13 @@ class SignUpActivity : AppCompatActivity() {
         binding.apply {
             toolbar.setNavigationOnClickListener { finish() }
             linkLogin.setOnClickListener {
-                startActivity(
+                startActivityWithAnimation(
                     Intent(
                         this@SignUpActivity,
                         LoginActivity::class.java
-                    )
+                    ).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
                 )
             }
             emailInput.editText?.addTextChangedListener {
@@ -147,5 +151,10 @@ class SignUpActivity : AppCompatActivity() {
                 }
             })
         }.show()
+    }
+
+    override fun finish() {
+        super.finish()
+        endActivityWithAnimation()
     }
 }

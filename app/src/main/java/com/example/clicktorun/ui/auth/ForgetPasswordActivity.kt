@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityForgetPasswordBinding
+import com.example.clicktorun.utils.endActivityWithAnimation
+import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
@@ -33,7 +35,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
         binding.apply {
             toolbar.setNavigationOnClickListener { finish() }
             linkSignUp.setOnClickListener {
-                startActivity(
+                startActivityWithAnimation(
                     Intent(
                         this@ForgetPasswordActivity,
                         SignUpActivity::class.java
@@ -100,5 +102,10 @@ class ForgetPasswordActivity : AppCompatActivity() {
                 }
             })
         }.show()
+    }
+
+    override fun finish() {
+        super.finish()
+        endActivityWithAnimation()
     }
 }
