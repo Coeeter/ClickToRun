@@ -6,19 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <Button
-        android:id="@+id/btnSignOut"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-        android:layout_width="0dp"
+    <fragment
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/navBar"
+        app:navGraph="@navigation/main_navigation" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/navigation_bar_shadow"
+        app:layout_constraintBottom_toTopOf="@id/navBar" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="50dp"
-        android:background="@drawable/custom_button_background"
-        android:text="Sign out"
-        android:textAllCaps="false"
-        app:backgroundTint="@null"
+        app:itemRippleColor="@color/rippleColor"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:menu="@menu/bottom_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

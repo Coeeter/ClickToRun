@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.clicktorun.R
 import com.example.clicktorun.databinding.ActivitySplashScreenBinding
 import com.example.clicktorun.ui.MainActivity
-import com.example.clicktorun.utils.Constants.Companion.ACTION_ANIMATE_LOGIN_PAGE
+import com.example.clicktorun.utils.ACTION_ANIMATE_LOGIN_PAGE
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashScreenActivity : AppCompatActivity() {

@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityLoginBinding
 import com.example.clicktorun.ui.MainActivity
-import com.example.clicktorun.utils.Constants.Companion.ACTION_ANIMATE_LOGIN_PAGE
+import com.example.clicktorun.utils.ACTION_ANIMATE_LOGIN_PAGE
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.Snackbar
 

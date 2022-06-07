@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/miHome">
+
+    <fragment
+        android:id="@+id/miHome"
+        android:name="com.example.clicktorun.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/miInsights"
+        android:name="com.example.clicktorun.ui.insights.InsightsFragment"
+        android:label="fragment_insights"
+        tools:layout="@layout/fragment_insights" />
+    <fragment
+        android:id="@+id/miLeaderboard"
+        android:name="com.example.clicktorun.ui.leaderboard.LeaderboardFragment"
+        android:label="fragment_leaderboard"
+        tools:layout="@layout/fragment_leaderboard" />
+    <fragment
+        android:id="@+id/miSettings"
+        android:name="com.example.clicktorun.ui.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>
