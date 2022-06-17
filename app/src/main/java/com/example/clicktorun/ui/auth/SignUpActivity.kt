@@ -12,7 +12,9 @@ import com.example.clicktorun.utils.endActivityWithAnimation
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private val authViewModel: AuthViewModel by viewModels()
@@ -77,7 +79,7 @@ class SignUpActivity : AppCompatActivity() {
                     overlay.visibility = View.GONE
                     createSnackbar()
                 }
-                is AuthViewModel.AuthState.Failure -> binding.apply {
+                is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     progress.visibility = View.GONE
                     overlay.visibility = View.GONE
                     Snackbar.make(

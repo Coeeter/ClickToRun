@@ -12,7 +12,9 @@ import com.example.clicktorun.utils.endActivityWithAnimation
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ForgetPasswordActivity : AppCompatActivity() {
     private lateinit var binding: ActivityForgetPasswordBinding
     private val authViewModel: AuthViewModel by viewModels()

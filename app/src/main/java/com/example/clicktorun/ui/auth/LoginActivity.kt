@@ -12,7 +12,9 @@ import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.ACTION_ANIMATE_LOGIN_PAGE
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private val authViewModel: AuthViewModel by viewModels()
@@ -81,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
                         finish()
                     }
                 }
-                is AuthViewModel.AuthState.Failure -> binding.apply {
+                is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     progress.visibility = View.GONE
                     overlay.visibility = View.GONE
                     Snackbar.make(

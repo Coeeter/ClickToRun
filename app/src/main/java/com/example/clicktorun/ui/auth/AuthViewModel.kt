@@ -4,9 +4,14 @@ import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.example.clicktorun.repositories.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AuthViewModel : ViewModel() {
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
     private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
     val authState: LiveData<AuthState>
         get() = _authState
@@ -20,12 +25,12 @@ class AuthViewModel : ViewModel() {
         val passwordCheck = !validatePasswordFields(password, null)
         if (emailCheck || passwordCheck) return
         _authState.postValue(AuthState.Loading)
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email!!, password!!)
+        authRepository.login(email!!, password!!)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful)
                     return@addOnCompleteListener _authState.postValue(AuthState.Success)
                 task.exception?.run {
-                    _authState.postValue(AuthState.Failure(message))
+                    _authState.postValue(AuthState.FireBaseFailure(message))
                 }
             }
     }
@@ -35,12 +40,12 @@ class AuthViewModel : ViewModel() {
         val passwordCheck = !validatePasswordFields(password, confirmPassword, true)
         if (emailCheck || passwordCheck) return
         _authState.postValue(AuthState.Loading)
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email!!, password!!)
+        authRepository.signUp(email!!, password!!)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful)
                     return@addOnCompleteListener _authState.postValue(AuthState.Success)
                 task.exception?.run {
-                    _authState.postValue(AuthState.Failure(message))
+                    _authState.postValue(AuthState.FireBaseFailure(message))
                 }
             }
     }
@@ -48,9 +53,12 @@ class AuthViewModel : ViewModel() {
     fun sendPasswordResetLinkToEmail() {
         if (!validateEmailFields(email)) return
         _authState.postValue(AuthState.Loading)
-        FirebaseAuth.getInstance().sendPasswordResetEmail(email!!)
+        authRepository.sendPasswordResetLink(email!!)
         _authState.postValue(AuthState.Success)
     }
+
+    fun getCurrentUser() = authRepository.getCurrentUser()
+    fun signOut() = authRepository.signOutUser()
 
     private fun validateEmailFields(email: String?): Boolean {
         if (email.isNullOrEmpty()) return _authState.run {
@@ -89,9 +97,9 @@ class AuthViewModel : ViewModel() {
         object Idle : AuthState()
         object Loading : AuthState()
         object Success : AuthState()
-        class Failure(val message: String?) : AuthState()
-        class InvalidPassword(val message: String) : AuthState()
         class InvalidEmail(val message: String) : AuthState()
+        class InvalidPassword(val message: String) : AuthState()
         class InvalidConfirmPassword(val message: String) : AuthState()
+        class FireBaseFailure(val message: String?) : AuthState()
     }
 }

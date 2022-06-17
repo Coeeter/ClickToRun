@@ -7,15 +7,20 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.util.Pair
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.clicktorun.R
 import com.example.clicktorun.databinding.ActivitySplashScreenBinding
 import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.ACTION_ANIMATE_LOGIN_PAGE
-import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SplashScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashScreenBinding
+
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +28,7 @@ class SplashScreenActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Handler(mainLooper).postDelayed({
-            FirebaseAuth.getInstance().currentUser?.let {
+            authViewModel.getCurrentUser()?.let {
                 return@postDelayed Intent(this, MainActivity::class.java).run {
                     action = ACTION_ANIMATE_LOGIN_PAGE
                     startActivity(this)

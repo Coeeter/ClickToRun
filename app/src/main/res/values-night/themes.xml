@@ -3,7 +3,7 @@
     <style name="Theme.ClickToRun" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
         <item name="android:textColorSecondary">@color/textColor</item>
         <item name="android:textColorPrimary">@color/textColor</item>
         <!-- Secondary brand color. -->
