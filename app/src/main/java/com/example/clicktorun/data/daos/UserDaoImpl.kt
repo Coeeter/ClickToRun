@@ -3,7 +3,6 @@ package com.example.clicktorun.data.daos
 import android.util.Log
 import com.example.clicktorun.data.models.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 

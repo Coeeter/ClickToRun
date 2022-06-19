@@ -12,6 +12,6 @@ import com.example.clicktorun.data.models.Run
     version = 1
 )
 @TypeConverters(RunConverter::class)
-abstract class RunDatabase: RoomDatabase() {
+abstract class RunDatabase : RoomDatabase() {
     abstract fun getRunDao(): RunDao
 }

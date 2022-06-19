@@ -2,7 +2,6 @@ package com.example.clicktorun.ui.auth
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -37,7 +36,10 @@ class SplashScreenActivity : AppCompatActivity() {
                 val values = authViewModel.getCurrentUser()
                 Log.d("poly", values.toString())
                 if (values[0] != null && values[1] == null)
-                    return@launch Intent(this@SplashScreenActivity, UserDetailsActivity::class.java).run {
+                    return@launch Intent(
+                        this@SplashScreenActivity,
+                        UserDetailsActivity::class.java
+                    ).run {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivityWithAnimation(this)
                         finish()

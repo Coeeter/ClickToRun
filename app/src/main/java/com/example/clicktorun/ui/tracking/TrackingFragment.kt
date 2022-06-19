@@ -1,10 +1,8 @@
 package com.example.clicktorun.ui.tracking
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -15,17 +13,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Run
-import com.example.clicktorun.data.models.User
 import com.example.clicktorun.databinding.FragmentTrackingBinding
 import com.example.clicktorun.services.Line
 import com.example.clicktorun.services.RunService
-import com.example.clicktorun.ui.auth.LoginActivity
 import com.example.clicktorun.ui.auth.UserDetailsActivity
 import com.example.clicktorun.utils.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.round
 
@@ -81,11 +76,11 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         }
         trackingViewModel.user.observe(viewLifecycleOwner) {
             it ?: return@observe run {
-                    Intent(requireContext(), UserDetailsActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        requireActivity().startActivityWithAnimation(this)
-                    }
+                Intent(requireContext(), UserDetailsActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    requireActivity().startActivityWithAnimation(this)
                 }
+            }
             weight = it.weightInKilograms
         }
         trackingViewModel.getAuthUser()?.let { email = it.email!! }

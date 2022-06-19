@@ -147,6 +147,7 @@ class SignUpActivity : AppCompatActivity() {
                         3000
                     )
                 }
+
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
                     finish()

@@ -5,7 +5,6 @@ import com.example.clicktorun.data.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class UserRepository @Inject constructor(
     private val userDao: UserDao

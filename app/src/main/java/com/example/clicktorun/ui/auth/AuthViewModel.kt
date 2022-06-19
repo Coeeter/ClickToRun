@@ -128,7 +128,7 @@ class AuthViewModel @Inject constructor(
         return true
     }
 
-    private fun validateWeight(weight: String?): Boolean{
+    private fun validateWeight(weight: String?): Boolean {
         if (weight.isNullOrEmpty())
             return _authState.run {
                 value = AuthState.InvalidWeight("Weight required!")

@@ -1,7 +1,7 @@
 package com.example.clicktorun.repositories
 
-import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.data.daos.RunDao
+import com.example.clicktorun.data.models.Run
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
