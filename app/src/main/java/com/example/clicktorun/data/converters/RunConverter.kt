@@ -1,11 +1,11 @@
-package com.example.clicktorun.db
+package com.example.clicktorun.data.converters
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
 import java.io.ByteArrayOutputStream
 
-class Converters {
+class RunConverter {
     @TypeConverter
     fun toBitmap(boas: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(boas, 0, boas.size)

@@ -8,11 +8,7 @@ import javax.inject.Singleton
 class AuthRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) {
-    fun getCurrentUser() =
-        firebaseAuth.currentUser
-
-    fun signOutUser() =
-        firebaseAuth.signOut()
+    fun getAuthUser() = firebaseAuth.currentUser
 
     fun login(email: String, password: String) =
         firebaseAuth.signInWithEmailAndPassword(email, password)
@@ -22,4 +18,6 @@ class AuthRepository @Inject constructor(
 
     fun sendPasswordResetLink(email: String) =
         firebaseAuth.sendPasswordResetEmail(email)
+
+    fun signOut() = firebaseAuth.signOut()
 }

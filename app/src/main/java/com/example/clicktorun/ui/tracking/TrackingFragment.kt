@@ -3,23 +3,31 @@ package com.example.clicktorun.ui.tracking
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.clicktorun.R
+import com.example.clicktorun.data.models.Run
+import com.example.clicktorun.data.models.User
 import com.example.clicktorun.databinding.FragmentTrackingBinding
-import com.example.clicktorun.db.Run
 import com.example.clicktorun.services.Line
 import com.example.clicktorun.services.RunService
+import com.example.clicktorun.ui.auth.LoginActivity
+import com.example.clicktorun.ui.auth.UserDetailsActivity
 import com.example.clicktorun.utils.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.round
 
 @AndroidEntryPoint
 class TrackingFragment : Fragment(R.layout.fragment_tracking) {
@@ -29,6 +37,10 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private var runPath: MutableList<Line> = mutableListOf()
     private var distanceInMetres = 0
     private var timeTakenInMilliseconds = 0L
+    private var isDarkModeEnabled = false
+    private var weight = 60.0
+    private var caloriesBurnt = 0.0
+    private var email = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,9 +53,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentTrackingBinding.bind(view)
-        (requireActivity() as AppCompatActivity)
-            .setSupportActionBar(binding.toolbar.apply { title = "" })
+        setUpVariables(view)
         setUpMap(savedInstanceState)
         binding.btnAddRun.setOnClickListener {
             sendCommandToService(
@@ -54,22 +64,40 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         setUpServiceListeners()
     }
 
+    private fun setUpVariables(view: View) {
+        binding = FragmentTrackingBinding.bind(view)
+        (requireActivity() as AppCompatActivity)
+            .setSupportActionBar(binding.toolbar.apply { title = "" })
+        binding.bottomActionBar.background = AppCompatResources.getDrawable(
+            requireContext(),
+            R.drawable.custom_light_mode_background
+        )
+        if (requireContext().isNightModeEnabled()) {
+            isDarkModeEnabled = true
+            binding.bottomActionBar.background = AppCompatResources.getDrawable(
+                requireContext(),
+                R.drawable.custom_dark_mode_background
+            )
+        }
+        trackingViewModel.user.observe(viewLifecycleOwner) {
+            it ?: return@observe run {
+                    Intent(requireContext(), UserDetailsActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        requireActivity().startActivityWithAnimation(this)
+                    }
+                }
+            weight = it.weightInKilograms
+        }
+        trackingViewModel.getAuthUser()?.let { email = it.email!! }
+        trackingViewModel.getCurrentUser()
+    }
+
     private fun setUpMap(savedInstanceState: Bundle?) {
         binding.map.onCreate(savedInstanceState)
         binding.map.getMapAsync {
             googleMap = it.apply {
                 mapType = GoogleMap.MAP_TYPE_NORMAL
-                if (resources.configuration.uiMode
-                        .and(Configuration.UI_MODE_NIGHT_MASK) ==
-                    Configuration.UI_MODE_NIGHT_YES
-                ) {
-                    setMapStyle(
-                        MapStyleOptions.loadRawResourceStyle(
-                            requireContext(),
-                            R.raw.map_night_style
-                        )
-                    )
-                }
+                configureMapType(this, isDarkModeEnabled)
                 val singaporeLocation = LatLng(1.3521, 103.8198)
                 moveCamera(CameraUpdateFactory.newLatLngZoom(singaporeLocation, 10f))
             }
@@ -100,6 +128,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         RunService.distanceRanInMetres.observe(viewLifecycleOwner) {
             distanceInMetres = it
             binding.distanceRan.text = distanceInMetres.formatDistance()
+            caloriesBurnt = getCaloriesBurnt()
         }
         RunService.isTracking.observe(viewLifecycleOwner) {
             binding.btnAddRun.apply {
@@ -115,39 +144,85 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     }
 
     private fun saveRun(): Boolean {
-        val latLngBoundsBuilder = LatLngBounds.builder()
-        runPath.forEach { line ->
-            if (line.isEmpty()) return@forEach
-            line.forEach { latLng ->
-                latLngBoundsBuilder.include(latLng)
+        binding.loading.visibility = View.VISIBLE
+        formatMap()
+        Handler(requireActivity().mainLooper).postDelayed({
+            val latLngBoundsBuilder = LatLngBounds.builder()
+            runPath.forEach { line ->
+                if (line.isEmpty()) return@forEach
+                line.forEach { latLng ->
+                    latLngBoundsBuilder.include(latLng)
+                }
             }
-        }
-        googleMap?.moveCamera(
-            CameraUpdateFactory.newLatLngBounds(
-                latLngBoundsBuilder.build(),
-                binding.map.width,
-                binding.map.height,
-                (binding.map.height * 0.05f).toInt()
+            googleMap?.moveCamera(
+                CameraUpdateFactory.newLatLngBounds(
+                    latLngBoundsBuilder.build(),
+                    binding.map.width,
+                    binding.map.height,
+                    (binding.map.width * 0.05f).toInt()
+                )
             )
-        )
-        googleMap?.snapshot {
-            val run = Run(
-                distanceInMetres,
-                System.currentTimeMillis(),
-                timeTakenInMilliseconds,
-                it
-            )
-            trackingViewModel.saveRun(run)
-            cancelRun()
-        }
+            googleMap?.setOnMapLoadedCallback {
+                val averageSpeed =
+                    round(distanceInMetres / (timeTakenInMilliseconds / 1000.0) * 360) / 100
+                val run = Run(
+                    email,
+                    distanceInMetres,
+                    System.currentTimeMillis(),
+                    timeTakenInMilliseconds,
+                    averageSpeed,
+                    getCaloriesBurnt()
+                )
+                googleMap?.snapshot { firstImage ->
+                    configureMapType(googleMap!!, !isDarkModeEnabled)
+                    googleMap?.setOnMapLoadedCallback {
+                        googleMap?.snapshot { secondImage ->
+                            run.apply {
+                                lightModeImage = firstImage
+                                darkModeImage = secondImage
+                            }
+                            if (isDarkModeEnabled)
+                                run.apply {
+                                    lightModeImage = secondImage
+                                    darkModeImage = firstImage
+                                }
+                            trackingViewModel.saveRun(run)
+                            cancelRun()
+                        }
+                    }
+                }
+            }
+        }, 2000)
         return true
     }
+
+    private fun formatMap() {
+        val layoutParams = binding.map.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+        layoutParams.dimensionRatio = "h,1:1"
+        binding.map.layoutParams = layoutParams
+    }
+
+    private fun getCaloriesBurnt() = round(((distanceInMetres / 1000.0) * weight) * 100) / 100
 
     private fun sendCommandToService(command: String) {
         Intent(requireContext(), RunService::class.java).run {
             action = command
             requireActivity().startService(this)
         }
+    }
+
+    private fun configureMapType(map: GoogleMap, isDarkModeEnabled: Boolean) {
+        if (isDarkModeEnabled)
+            return run {
+                map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        requireContext(),
+                        R.raw.map_night_style
+                    )
+                )
+            }
+        map.setMapStyle(MapStyleOptions("[]"))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

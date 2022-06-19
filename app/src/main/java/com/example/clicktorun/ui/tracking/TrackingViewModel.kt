@@ -1,19 +1,38 @@
 package com.example.clicktorun.ui.tracking
 
-import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clicktorun.db.Run
+import com.example.clicktorun.data.models.Run
+import com.example.clicktorun.data.models.User
+import com.example.clicktorun.repositories.AuthRepository
 import com.example.clicktorun.repositories.RunRepository
+import com.example.clicktorun.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TrackingViewModel @Inject constructor(
-    private val runRepository: RunRepository
+    private val runRepository: RunRepository,
+    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
-    val runList = runRepository.runList
+    private val _user = MutableLiveData<User?>()
+    val user: LiveData<User?>
+        get() = _user
+
+    fun getRunList(email: String) = runRepository.getRunList(email)
+
+    fun getCurrentUser() {
+        viewModelScope.launch {
+            _user.postValue(userRepository.getCurrentUser())
+        }
+    }
+
+    fun getAuthUser() = authRepository.getAuthUser()
 
     fun saveRun(run: Run) {
         viewModelScope.launch {
@@ -21,9 +40,9 @@ class TrackingViewModel @Inject constructor(
         }
     }
 
-    fun deleteAllRuns() {
+    fun deleteAllRuns(email: String) {
         viewModelScope.launch {
-            runRepository.deleteAllRunsFromLocal()
+            runRepository.deleteAllRunsFromLocal(email)
         }
     }
 }

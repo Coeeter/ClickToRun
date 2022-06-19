@@ -16,13 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClickToRun">
         <activity
-            android:name="com.example.clicktorun.ui.auth.ForgetPasswordActivity"
+            android:name=".ui.auth.UserDetailsActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.clicktorun.ui.auth.SignUpActivity"
+            android:name=".ui.auth.ForgetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.clicktorun.ui.auth.LoginActivity"
+            android:name=".ui.auth.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".ui.MainActivity"
@@ -40,6 +43,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${GOOGLE_MAPS_API_KEY}" />
+
         <service
             android:name=".services.RunService"
             android:foregroundServiceType="location" />

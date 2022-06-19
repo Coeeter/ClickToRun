@@ -42,12 +42,17 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 .setMessage("Are you sure you want to delete all runs and lose its data forever?")
                 .setPositiveButton("Yes") { dialog, _ ->
                     dialog.dismiss()
-                    trackingViewModel.deleteAllRuns()
+                    trackingViewModel.getAuthUser()?.let {
+                        trackingViewModel.deleteAllRuns(it.email!!)
+                    }
                     Snackbar.make(
                         binding.root,
                         "Successfully deleted all Runs!",
                         Snackbar.LENGTH_SHORT
-                    ).show()
+                    ).apply {
+                        anchorView = binding.anchor
+                        show()
+                    }
                 }
                 .setNegativeButton("No") { dialog, _ ->
                     dialog.dismiss()

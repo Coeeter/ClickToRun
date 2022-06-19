@@ -3,6 +3,7 @@ package com.example.clicktorun.ui.auth
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,9 @@ import com.example.clicktorun.utils.ACTION_ANIMATE_LOGIN_PAGE
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -74,14 +78,7 @@ class LoginActivity : AppCompatActivity() {
                 is AuthViewModel.AuthState.Success -> binding.apply {
                     progress.visibility = View.GONE
                     overlay.visibility = View.GONE
-                    Intent(
-                        this@LoginActivity,
-                        MainActivity::class.java
-                    ).run {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivityWithAnimation(this)
-                        finish()
-                    }
+                    checkUserStatus()
                 }
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     progress.visibility = View.GONE
@@ -124,8 +121,26 @@ class LoginActivity : AppCompatActivity() {
             return run {
                 Handler(mainLooper).postDelayed({
                     binding.screen.visibility = View.VISIBLE
-                }, 1000)
+                }, 500)
             }
         binding.screen.visibility = View.VISIBLE
+    }
+
+    private fun checkUserStatus() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val list = authViewModel.getCurrentUser()
+            Log.d("poly", list.toString())
+            if (list[1] == null)
+                return@launch Intent(this@LoginActivity, UserDetailsActivity::class.java).run {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivityWithAnimation(this)
+                    finish()
+                }
+            Intent(this@LoginActivity, MainActivity::class.java).run {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivityWithAnimation(this)
+                finish()
+            }
+        }
     }
 }

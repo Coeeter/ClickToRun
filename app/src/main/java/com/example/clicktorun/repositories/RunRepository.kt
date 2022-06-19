@@ -1,9 +1,7 @@
 package com.example.clicktorun.repositories
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.clicktorun.db.Run
-import com.example.clicktorun.db.RunDao
+import com.example.clicktorun.data.models.Run
+import com.example.clicktorun.data.daos.RunDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -13,7 +11,7 @@ import javax.inject.Singleton
 class RunRepository @Inject constructor(
     private val runDao: RunDao
 ) {
-    val runList = runDao.getAllRuns()
+    fun getRunList(email: String) = runDao.getAllRuns(email)
 
     suspend fun insertRunToLocal(run: Run) {
         withContext(Dispatchers.IO) {
@@ -27,9 +25,9 @@ class RunRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteAllRunsFromLocal() {
+    suspend fun deleteAllRunsFromLocal(email: String) {
         withContext(Dispatchers.IO) {
-            runDao.deleteAllRuns()
+            runDao.deleteAllRuns(email)
         }
     }
 }

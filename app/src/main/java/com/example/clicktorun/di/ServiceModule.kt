@@ -3,13 +3,11 @@ package com.example.clicktorun.di
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import com.example.clicktorun.R
 import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.ACTION_NAVIGATE_TO_TRACKING
 import com.example.clicktorun.utils.NOTIFICATION_CHANNEL_ID
-import com.example.clicktorun.utils.NOTIFICATION_CHANNEL_NAME
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module

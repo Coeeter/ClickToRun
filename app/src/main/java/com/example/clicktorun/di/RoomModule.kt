@@ -2,8 +2,8 @@ package com.example.clicktorun.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.clicktorun.db.RunDao
-import com.example.clicktorun.db.RunDatabase
+import com.example.clicktorun.data.daos.RunDao
+import com.example.clicktorun.data.databases.RunDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

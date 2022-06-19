@@ -1,7 +1,9 @@
 package com.example.clicktorun.utils
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.location.Location
 import com.example.clicktorun.R
 import com.example.clicktorun.services.Line
@@ -58,3 +60,8 @@ fun MutableList<Line>.getDistance(): Int {
     }
     return totalDistance.roundToInt()
 }
+
+fun Context.isNightModeEnabled(): Boolean =
+    resources.configuration.uiMode.and(
+        Configuration.UI_MODE_NIGHT_MASK
+    ) == Configuration.UI_MODE_NIGHT_YES

@@ -10,6 +10,8 @@
         android:id="@+id/toolbarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
@@ -22,16 +24,17 @@
         android:id="@+id/map"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarContainer"
-        app:layout_constraintDimensionRatio="h,1:1"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbarContainer" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomActionBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/transparent"
+        android:background="@drawable/custom_light_mode_background"
+        android:layout_margin="10dp"
         android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -71,5 +74,31 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorOnPrimary"
+        android:elevation="10dp"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progress"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Do not close the app\nYour run is being saved"
+            android:textSize="22sp" />
+    </RelativeLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
