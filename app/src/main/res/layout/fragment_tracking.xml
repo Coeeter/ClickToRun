@@ -10,7 +10,7 @@
         android:id="@+id/toolbarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="?attr/colorPrimary"
+        android:background="@drawable/custom_gradient_background"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -33,8 +33,8 @@
         android:id="@+id/bottomActionBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/custom_light_mode_background"
         android:layout_margin="10dp"
+        android:background="@drawable/custom_light_mode_background"
         android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent">
 

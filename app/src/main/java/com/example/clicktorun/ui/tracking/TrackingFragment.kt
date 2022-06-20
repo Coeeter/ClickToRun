@@ -1,5 +1,6 @@
 package com.example.clicktorun.ui.tracking
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler

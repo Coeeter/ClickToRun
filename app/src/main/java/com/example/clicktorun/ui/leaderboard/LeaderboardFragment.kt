@@ -1,5 +1,6 @@
 package com.example.clicktorun.ui.leaderboard
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -12,5 +13,10 @@ class LeaderboardFragment : Fragment(R.layout.fragment_leaderboard) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentLeaderboardBinding.bind(view)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        view?.let { onViewCreated(it, null) }
     }
 }

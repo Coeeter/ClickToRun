@@ -51,7 +51,7 @@
         android:id="@+id/anchor"
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

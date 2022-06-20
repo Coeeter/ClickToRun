@@ -43,11 +43,11 @@
         android:id="@+id/trackingFragment"
         android:name="com.example.clicktorun.ui.tracking.TrackingFragment"
         android:label="fragment_tracking"
-        tools:layout="@layout/fragment_tracking" >
+        tools:layout="@layout/fragment_tracking">
         <action
             android:id="@+id/action_trackingFragment_to_miHome"
             app:destination="@id/miHome"
             app:popUpTo="@id/trackingFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

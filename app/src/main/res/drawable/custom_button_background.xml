@@ -10,13 +10,4 @@
             <corners android:radius="32dp" />
         </shape>
     </item>
-<!--    <item android:state_pressed="true">-->
-<!--        <shape android:shape="rectangle">-->
-<!--            <gradient-->
-<!--                android:centerColor="#35C9CC"-->
-<!--                android:endColor="#67DDA2"-->
-<!--                android:startColor="#03A9D5" />-->
-<!--            <corners android:radius="32dp" />-->
-<!--        </shape>-->
-<!--    </item>-->
 </ripple>

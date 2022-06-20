@@ -6,6 +6,6 @@
         android:toXDelta="-20%p" />
     <alpha
         android:duration="300"
-        android:toAlpha="0.7"
-        android:fromAlpha="1.0" />
+        android:fromAlpha="1.0"
+        android:toAlpha="0.7" />
 </set>

@@ -57,16 +57,13 @@ class ForgetPasswordActivity : AppCompatActivity() {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
                     progress.visibility = View.VISIBLE
-                    overlay.visibility = View.VISIBLE
                 }
                 is AuthViewModel.AuthState.Success -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     createSnackbar()
                 }
                 is AuthViewModel.AuthState.InvalidEmail -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     emailInput.apply {
                         isErrorEnabled = true
                         error = it.message
@@ -74,7 +71,6 @@ class ForgetPasswordActivity : AppCompatActivity() {
                 }
                 else -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                 }
             }
         }
@@ -96,6 +92,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
                     3000
                 )
             }
+
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 finish()

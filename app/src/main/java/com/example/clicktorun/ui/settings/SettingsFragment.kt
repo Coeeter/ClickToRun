@@ -3,6 +3,7 @@ package com.example.clicktorun.ui.settings
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -16,7 +17,6 @@ import com.example.clicktorun.ui.auth.LoginActivity
 import com.example.clicktorun.ui.tracking.TrackingViewModel
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.startActivityWithAnimation
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,6 +33,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         trackingViewModel.getCurrentUser()
         setUpListeners()
     }
+
     private fun setUpListeners() {
         binding.btnSignOut.setOnClickListener {
             if (RunService.isTracking.value == true) return@setOnClickListener
@@ -65,5 +66,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        view?.let { onViewCreated(it, null) }
     }
 }

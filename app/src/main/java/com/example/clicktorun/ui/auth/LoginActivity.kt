@@ -2,17 +2,14 @@ package com.example.clicktorun.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityLoginBinding
 import com.example.clicktorun.ui.MainActivity
-import com.example.clicktorun.utils.ACTION_ANIMATE_LOGIN_PAGE
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.startActivityWithAnimation
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +24,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        animateScreen()
         setUpViews()
         setUpListeners()
     }
@@ -73,16 +69,13 @@ class LoginActivity : AppCompatActivity() {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
                     progress.visibility = View.VISIBLE
-                    overlay.visibility = View.VISIBLE
                 }
                 is AuthViewModel.AuthState.Success -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     checkUserStatus()
                 }
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     binding.root.createSnackBar(
                         message = it.message ?: "Unknown error has occurred",
                         okayAction = true
@@ -90,7 +83,6 @@ class LoginActivity : AppCompatActivity() {
                 }
                 is AuthViewModel.AuthState.InvalidEmail -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     emailInput.apply {
                         isErrorEnabled = true
                         error = it.message
@@ -98,7 +90,6 @@ class LoginActivity : AppCompatActivity() {
                 }
                 is AuthViewModel.AuthState.InvalidPassword -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     passwordInput.apply {
                         isErrorEnabled = true
                         error = it.message
@@ -106,20 +97,9 @@ class LoginActivity : AppCompatActivity() {
                 }
                 else -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                 }
             }
         }
-    }
-
-    private fun animateScreen() {
-        if (intent.action == ACTION_ANIMATE_LOGIN_PAGE)
-            return run {
-                Handler(mainLooper).postDelayed({
-                    binding.screen.visibility = View.VISIBLE
-                }, 500)
-            }
-        binding.screen.visibility = View.VISIBLE
     }
 
     private fun checkUserStatus() {

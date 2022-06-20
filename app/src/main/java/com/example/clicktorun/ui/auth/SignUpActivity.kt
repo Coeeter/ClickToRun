@@ -73,16 +73,13 @@ class SignUpActivity : AppCompatActivity() {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
                     progress.visibility = View.VISIBLE
-                    overlay.visibility = View.VISIBLE
                 }
                 is AuthViewModel.AuthState.Success -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     createSnackbar()
                 }
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     binding.root.createSnackBar(
                         message = it.message ?: "Unknown error has occurred",
                         okayAction = true
@@ -90,7 +87,6 @@ class SignUpActivity : AppCompatActivity() {
                 }
                 is AuthViewModel.AuthState.InvalidEmail -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     emailInput.apply {
                         isErrorEnabled = true
                         error = it.message
@@ -98,7 +94,6 @@ class SignUpActivity : AppCompatActivity() {
                 }
                 is AuthViewModel.AuthState.InvalidPassword -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     passwordInput.apply {
                         isErrorEnabled = true
                         error = it.message
@@ -106,7 +101,6 @@ class SignUpActivity : AppCompatActivity() {
                 }
                 is AuthViewModel.AuthState.InvalidConfirmPassword -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                     confirmPasswordInput.apply {
                         isErrorEnabled = true
                         error = it.message
@@ -118,7 +112,6 @@ class SignUpActivity : AppCompatActivity() {
                 }
                 else -> binding.apply {
                     progress.visibility = View.GONE
-                    overlay.visibility = View.GONE
                 }
             }
         }
@@ -133,14 +126,14 @@ class SignUpActivity : AppCompatActivity() {
                 super.onShown(transientBottomBar)
                 Handler(mainLooper).postDelayed(
                     {
-                        if (
-                            !this@SignUpActivity.isFinishing ||
+                        if (!this@SignUpActivity.isFinishing ||
                             !this@SignUpActivity.isDestroyed
                         ) finish()
                     },
                     3000
                 )
             }
+
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 finish()

@@ -13,13 +13,26 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="50dp"
-        android:transitionName="brand"
+        android:elevation="10dp"
         android:src="@mipmap/ic_launcher_round_shadow_foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/appName"
+        style="@style/TextAppearance.MaterialComponents.Headline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="?attr/colorOnPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/brand"
+        app:layout_constraintEnd_toEndOf="@id/brand"
+        app:layout_constraintStart_toStartOf="@id/brand"
+        app:layout_constraintTop_toTopOf="@id/brand" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

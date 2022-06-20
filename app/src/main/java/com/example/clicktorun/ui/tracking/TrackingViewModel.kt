@@ -9,7 +9,6 @@ import com.example.clicktorun.data.models.User
 import com.example.clicktorun.repositories.RunRepository
 import com.example.clicktorun.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

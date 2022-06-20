@@ -20,13 +20,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
-        binding.toolbar.title = "Your Runs"
         binding.btnAddRun.setOnClickListener {
             findNavController().navigate(R.id.action_miHome_to_trackingFragment)
         }
-        trackingViewModel.user.observe(viewLifecycleOwner) {
-            it ?: return@observe
-            trackingViewModel.getRunList(it.email).observe(viewLifecycleOwner) {
+        trackingViewModel.user.observe(viewLifecycleOwner) { user ->
+            user ?: return@observe
+            trackingViewModel.getRunList(user.email).observe(viewLifecycleOwner) {
+                if (it.isEmpty()) return@observe binding.noRunsView.setVisibility(View.VISIBLE)
+                binding.noRunsView.visibility = View.GONE
                 binding.recyclerView.adapter = RunAdapter().apply { setRunList(it) }
             }
         }

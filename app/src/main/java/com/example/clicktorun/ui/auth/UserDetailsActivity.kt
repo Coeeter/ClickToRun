@@ -10,7 +10,6 @@ import com.example.clicktorun.databinding.ActivityUserDetailsBinding
 import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.startActivityWithAnimation
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -55,7 +54,6 @@ class UserDetailsActivity : AppCompatActivity() {
         authViewModel.authState.observe(this) {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
-                    overlay.visibility = View.VISIBLE
                     progress.visibility = View.VISIBLE
                 }
                 is AuthViewModel.AuthState.Success -> binding.apply {
@@ -96,7 +94,6 @@ class UserDetailsActivity : AppCompatActivity() {
     }
 
     private fun hideLoading() = binding.apply {
-        overlay.visibility = View.GONE
         progress.visibility = View.GONE
     }
 }
