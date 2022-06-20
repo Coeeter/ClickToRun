@@ -34,7 +34,6 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private var timeTakenInMilliseconds = 0L
     private var isDarkModeEnabled = false
     private var weight = 60.0
-    private var caloriesBurnt = 0.0
     private var email = ""
 
     override fun onCreateView(
@@ -50,23 +49,24 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         super.onViewCreated(view, savedInstanceState)
         setUpVariables(view)
         setUpMap(savedInstanceState)
+        setUpServiceListeners()
+    }
+
+    private fun setUpVariables(view: View) {
+        binding = FragmentTrackingBinding.bind(view)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(
+            binding.toolbar.apply { title = "" }
+        )
+        binding.bottomActionBar.background = AppCompatResources.getDrawable(
+            requireContext(),
+            R.drawable.custom_light_mode_background
+        )
         binding.btnAddRun.setOnClickListener {
             sendCommandToService(
                 if (RunService.isTracking.value == true) ACTION_PAUSE_RUN_SERVICE
                 else ACTION_START_RUN_SERVICE
             )
         }
-        setUpServiceListeners()
-    }
-
-    private fun setUpVariables(view: View) {
-        binding = FragmentTrackingBinding.bind(view)
-        (requireActivity() as AppCompatActivity)
-            .setSupportActionBar(binding.toolbar.apply { title = "" })
-        binding.bottomActionBar.background = AppCompatResources.getDrawable(
-            requireContext(),
-            R.drawable.custom_light_mode_background
-        )
         if (requireContext().isNightModeEnabled()) {
             isDarkModeEnabled = true
             binding.bottomActionBar.background = AppCompatResources.getDrawable(
@@ -82,8 +82,8 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
                 }
             }
             weight = it.weightInKilograms
+            email = it.email
         }
-        trackingViewModel.getAuthUser()?.let { email = it.email!! }
         trackingViewModel.getCurrentUser()
     }
 
@@ -105,8 +105,8 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             if (RunService.isTracking.value == false) return@observe
             if (it.size == 0 || it.last().size == 0) return@observe
             googleMap?.setOnMapLoadedCallback {
-                if (RunService.isTracking.value == false) return@setOnMapLoadedCallback
                 for (i in it.indices) {
+                    if (RunService.isTracking.value == false) return@setOnMapLoadedCallback
                     googleMap?.addPolyline(PolylineOptions().apply {
                         color(requireContext().getColor(R.color.primary))
                         width(8f)
@@ -123,7 +123,6 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         RunService.distanceRanInMetres.observe(viewLifecycleOwner) {
             distanceInMetres = it
             binding.distanceRan.text = distanceInMetres.formatDistance()
-            caloriesBurnt = getCaloriesBurnt()
         }
         RunService.isTracking.observe(viewLifecycleOwner) {
             binding.btnAddRun.apply {
@@ -140,7 +139,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
     private fun saveRun(): Boolean {
         binding.loading.visibility = View.VISIBLE
-        formatMap()
+        changeMapLayoutParams()
         Handler(requireActivity().mainLooper).postDelayed({
             val latLngBoundsBuilder = LatLngBounds.builder()
             runPath.forEach { line ->
@@ -191,7 +190,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         return true
     }
 
-    private fun formatMap() {
+    private fun changeMapLayoutParams() {
         val layoutParams = binding.map.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
         layoutParams.dimensionRatio = "h,1:1"

@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivitySignUpBinding
+import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.endActivityWithAnimation
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -82,14 +83,10 @@ class SignUpActivity : AppCompatActivity() {
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     progress.visibility = View.GONE
                     overlay.visibility = View.GONE
-                    Snackbar.make(
-                        binding.root,
-                        it.message ?: "Unknown error has occurred",
-                        Snackbar.LENGTH_SHORT
-                    ).apply {
-                        setAction("OKAY") { dismiss() }
-                        show()
-                    }
+                    binding.root.createSnackBar(
+                        message = it.message ?: "Unknown error has occurred",
+                        okayAction = true
+                    ).show()
                 }
                 is AuthViewModel.AuthState.InvalidEmail -> binding.apply {
                     progress.visibility = View.GONE
@@ -128,32 +125,27 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun createSnackbar() {
-        Snackbar.make(
-            binding.root,
-            "Successfully created account!",
-            Snackbar.LENGTH_SHORT
-        ).apply {
-            setAction("OKAY") { dismiss() }
-            addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                override fun onShown(transientBottomBar: Snackbar?) {
-                    super.onShown(transientBottomBar)
-                    Handler(mainLooper).postDelayed(
-                        {
-                            if (
-                                !this@SignUpActivity.isFinishing ||
-                                !this@SignUpActivity.isDestroyed
-                            ) finish()
-                        },
-                        3000
-                    )
-                }
-
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    super.onDismissed(transientBottomBar, event)
-                    finish()
-                }
-            })
-        }.show()
+        binding.root.createSnackBar(
+            message = "Successfully created account!",
+            okayAction = true
+        ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onShown(transientBottomBar: Snackbar?) {
+                super.onShown(transientBottomBar)
+                Handler(mainLooper).postDelayed(
+                    {
+                        if (
+                            !this@SignUpActivity.isFinishing ||
+                            !this@SignUpActivity.isDestroyed
+                        ) finish()
+                    },
+                    3000
+                )
+            }
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                finish()
+            }
+        }).show()
     }
 
     override fun finish() {

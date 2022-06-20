@@ -4,12 +4,14 @@ import com.google.firebase.firestore.DocumentSnapshot
 
 data class User(
     val username: String,
+    val email: String,
     val heightInMetres: Double,
     val weightInKilograms: Double,
 ) {
-    constructor(map: DocumentSnapshot) : this(
-        map.getString("username")!!,
-        map.getDouble("heightInCentimetres")!! / 100.0,
-        map.getDouble("weightInKilograms")!!
+    constructor(doc: DocumentSnapshot) : this(
+        doc.getString("username")!!,
+        doc.id,
+        doc.getDouble("heightInCentimetres")!! / 100.0,
+        doc.getDouble("weightInKilograms")!!
     )
 }

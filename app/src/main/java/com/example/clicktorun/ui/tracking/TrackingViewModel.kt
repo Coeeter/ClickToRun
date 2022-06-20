@@ -6,18 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.data.models.User
-import com.example.clicktorun.repositories.AuthRepository
 import com.example.clicktorun.repositories.RunRepository
 import com.example.clicktorun.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TrackingViewModel @Inject constructor(
     private val runRepository: RunRepository,
-    private val userRepository: UserRepository,
-    private val authRepository: AuthRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?>
@@ -30,8 +29,6 @@ class TrackingViewModel @Inject constructor(
             _user.postValue(userRepository.getCurrentUser())
         }
     }
-
-    fun getAuthUser() = authRepository.getAuthUser()
 
     fun saveRun(run: Run) {
         viewModelScope.launch {

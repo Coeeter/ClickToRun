@@ -33,9 +33,9 @@ class SplashScreenActivity : AppCompatActivity() {
 
         Handler(mainLooper).postDelayed({
             CoroutineScope(Dispatchers.Main).launch {
-                val values = authViewModel.getCurrentUser()
-                Log.d("poly", values.toString())
-                if (values[0] != null && values[1] == null)
+                val state = authViewModel.getCurrentUserState()
+                Log.d("poly", state.toString())
+                if (state["firebaseUser"] != null && state["firestoreUser"] == null)
                     return@launch Intent(
                         this@SplashScreenActivity,
                         UserDetailsActivity::class.java
@@ -44,7 +44,7 @@ class SplashScreenActivity : AppCompatActivity() {
                         startActivityWithAnimation(this)
                         finish()
                     }
-                if (values[0] != null)
+                if (state["firebaseUser"] != null)
                     return@launch Intent(this@SplashScreenActivity, MainActivity::class.java).run {
                         startActivity(this)
                         finish()

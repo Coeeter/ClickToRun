@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityForgetPasswordBinding
+import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.endActivityWithAnimation
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -80,31 +81,26 @@ class ForgetPasswordActivity : AppCompatActivity() {
     }
 
     private fun createSnackbar() {
-        Snackbar.make(
-            binding.root,
-            "Check your email for further instructions on how to reset your password",
-            Snackbar.LENGTH_SHORT
-        ).apply {
-            setAction("OKAY") { dismiss() }
-            addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                override fun onShown(transientBottomBar: Snackbar?) {
-                    super.onShown(transientBottomBar)
-                    Handler(mainLooper).postDelayed(
-                        {
-                            if (!this@ForgetPasswordActivity.isFinishing ||
-                                !this@ForgetPasswordActivity.isDestroyed
-                            ) finish()
-                        },
-                        3000
-                    )
-                }
-
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    super.onDismissed(transientBottomBar, event)
-                    finish()
-                }
-            })
-        }.show()
+        binding.root.createSnackBar(
+            message = "Check your email for further instructions on how to reset your password",
+            okayAction = true
+        ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onShown(transientBottomBar: Snackbar?) {
+                super.onShown(transientBottomBar)
+                Handler(mainLooper).postDelayed(
+                    {
+                        if (!this@ForgetPasswordActivity.isFinishing ||
+                            !this@ForgetPasswordActivity.isDestroyed
+                        ) finish()
+                    },
+                    3000
+                )
+            }
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                finish()
+            }
+        }).show()
     }
 
     override fun finish() {

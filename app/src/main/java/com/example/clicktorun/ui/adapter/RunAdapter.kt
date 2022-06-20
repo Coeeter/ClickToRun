@@ -8,15 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.RecyclerviewRunDetailsItemBinding
-import com.example.clicktorun.repositories.UserRepository
 import com.example.clicktorun.utils.formatDistance
 import com.example.clicktorun.utils.isNightModeEnabled
 import com.example.clicktorun.utils.toTimeString
-import javax.inject.Inject
 
-class RunAdapter @Inject constructor(
-    private val userRepository: UserRepository
-) : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
+class RunAdapter : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
 
     private var _runList = listOf<Run>()
     fun setRunList(runList: List<Run>) {
@@ -25,7 +21,6 @@ class RunAdapter @Inject constructor(
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-//        recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 2)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         super.onAttachedToRecyclerView(recyclerView)
     }

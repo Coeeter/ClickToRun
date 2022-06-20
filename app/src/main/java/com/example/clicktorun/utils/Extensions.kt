@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.location.Location
+import android.view.View
 import com.example.clicktorun.R
 import com.example.clicktorun.services.Line
+import com.google.android.material.snackbar.Snackbar
 import kotlin.math.roundToInt
 
 fun Activity.startActivityWithAnimation(intent: Intent) {
@@ -65,3 +67,15 @@ fun Context.isNightModeEnabled(): Boolean =
     resources.configuration.uiMode.and(
         Configuration.UI_MODE_NIGHT_MASK
     ) == Configuration.UI_MODE_NIGHT_YES
+
+fun View.createSnackBar(
+    message: String,
+    length: Int = Snackbar.LENGTH_SHORT,
+    okayAction: Boolean = false
+): Snackbar {
+    val snackBar = Snackbar.make(this, message, length)
+    if (okayAction) snackBar.apply {
+        setAction("Okay") { dismiss() }
+    }
+    return snackBar
+}

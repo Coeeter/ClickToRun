@@ -3,7 +3,6 @@ package com.example.clicktorun.ui.auth
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityLoginBinding
 import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.ACTION_ANIMATE_LOGIN_PAGE
+import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,14 +83,10 @@ class LoginActivity : AppCompatActivity() {
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     progress.visibility = View.GONE
                     overlay.visibility = View.GONE
-                    Snackbar.make(
-                        binding.root,
-                        it.message ?: "Unknown error has occurred",
-                        Snackbar.LENGTH_SHORT
-                    ).apply {
-                        setAction("OKAY") { dismiss() }
-                        show()
-                    }
+                    binding.root.createSnackBar(
+                        message = it.message ?: "Unknown error has occurred",
+                        okayAction = true
+                    ).show()
                 }
                 is AuthViewModel.AuthState.InvalidEmail -> binding.apply {
                     progress.visibility = View.GONE
@@ -128,9 +124,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun checkUserStatus() {
         CoroutineScope(Dispatchers.Main).launch {
-            val list = authViewModel.getCurrentUser()
-            Log.d("poly", list.toString())
-            if (list[1] == null)
+            val state = authViewModel.getCurrentUserState()
+            if (state["firestoreUser"] == null)
                 return@launch Intent(this@LoginActivity, UserDetailsActivity::class.java).run {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivityWithAnimation(this)

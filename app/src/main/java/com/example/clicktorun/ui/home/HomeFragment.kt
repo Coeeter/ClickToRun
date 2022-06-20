@@ -11,15 +11,11 @@ import com.example.clicktorun.databinding.FragmentHomeBinding
 import com.example.clicktorun.ui.adapter.RunAdapter
 import com.example.clicktorun.ui.tracking.TrackingViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
-    @Inject
-    lateinit var runAdapter: RunAdapter
     private lateinit var binding: FragmentHomeBinding
     private val trackingViewModel: TrackingViewModel by viewModels()
-    private var email = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,10 +24,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.btnAddRun.setOnClickListener {
             findNavController().navigate(R.id.action_miHome_to_trackingFragment)
         }
-        trackingViewModel.getAuthUser()?.let { email = it.email!! }
-        trackingViewModel.getRunList(email).observe(viewLifecycleOwner) {
-            binding.recyclerView.adapter = runAdapter.apply { setRunList(it) }
+        trackingViewModel.user.observe(viewLifecycleOwner) {
+            it ?: return@observe
+            trackingViewModel.getRunList(it.email).observe(viewLifecycleOwner) {
+                binding.recyclerView.adapter = RunAdapter().apply { setRunList(it) }
+            }
         }
+        trackingViewModel.getCurrentUser()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

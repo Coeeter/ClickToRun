@@ -70,7 +70,12 @@ class AuthViewModel @Inject constructor(
         val checkWeight = !validateWeight(weight)
         val checkHeight = !validateHeight(height)
         if (checkUsername || checkWeight || checkHeight) return
-        val user = User(username!!, height!!.toDouble() / 100, weight!!.toDouble())
+        val user = User(
+            username!!,
+            authRepository.getAuthUser()!!.email!!,
+            height!!.toDouble() / 100,
+            weight!!.toDouble()
+        )
         _authState.value = (AuthState.Loading)
         viewModelScope.launch {
             if (userRepository.insertUser(user))
@@ -79,8 +84,10 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    suspend fun getCurrentUser() =
-        listOf(authRepository.getAuthUser(), userRepository.getCurrentUser())
+    suspend fun getCurrentUserState() = hashMapOf(
+        "firebaseUser" to authRepository.getAuthUser(),
+        "firestoreUser" to userRepository.getCurrentUser()
+    )
 
     fun signOut() = authRepository.signOut()
 

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityUserDetailsBinding
 import com.example.clicktorun.ui.MainActivity
+import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -82,14 +83,10 @@ class UserDetailsActivity : AppCompatActivity() {
                 }
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     hideLoading()
-                    Snackbar.make(
-                        binding.root,
-                        it.message ?: "Unknown error has occurred",
-                        Snackbar.LENGTH_SHORT
-                    ).apply {
-                        setAction("OKAY") { dismiss() }
-                        show()
-                    }
+                    binding.root.createSnackBar(
+                        message = it.message ?: "Unknown error has occurred",
+                        okayAction = true
+                    ).show()
                 }
                 else -> binding.apply {
                     hideLoading()
