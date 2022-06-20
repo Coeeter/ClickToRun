@@ -48,11 +48,11 @@ class UserDaoImpl(
         return false
     }
 
-    override suspend fun updateUser(pair: Pair<String, Any>): Boolean {
+    override suspend fun updateUser(map: Map<String, Any>): Boolean {
         try {
             firebaseFirestore.collection("users")
                 .document(firebaseAuth.currentUser!!.email!!)
-                .set(pair)
+                .update(map)
                 .await()
             return true
         } catch (e: Exception) {
