@@ -1,6 +1,6 @@
 # ClickToRun, A Simple Fitness Tracker App
 <img src="https://github.com/Coeeter/ClickToRun/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png?raw=true" align="left">
-ClickToRun is an android native app using kotlin with MVVM architecture with firebase as the backend. This application is being created for my modules in my studies at Temasek Polytechnic to show my proficiency over native android app development with kotlin as the frontend language.
+ClickToRun is an android native app built using kotlin with MVVM architecture with firebase as the backend. This application is being created for my modules in my studies at Temasek Polytechnic to show my proficiency in native android app development with kotlin as the frontend language.
 <br clear="left"/>
 
 ## The Dependencies used to build the app so far are:

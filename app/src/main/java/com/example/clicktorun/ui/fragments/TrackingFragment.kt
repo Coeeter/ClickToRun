@@ -2,7 +2,6 @@ package com.example.clicktorun.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -21,6 +20,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.round
 
 @AndroidEntryPoint
@@ -134,17 +137,11 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private fun saveRun(): Boolean {
         binding.loading.visibility = View.VISIBLE
         changeMapLayoutParams()
-        Handler(requireActivity().mainLooper).postDelayed({
-            val latLngBoundsBuilder = LatLngBounds.builder()
-            runPath.forEach { line ->
-                if (line.isEmpty()) return@forEach
-                line.forEach { latLng ->
-                    latLngBoundsBuilder.include(latLng)
-                }
-            }
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(2000L)
             googleMap?.moveCamera(
                 CameraUpdateFactory.newLatLngBounds(
-                    latLngBoundsBuilder.build(),
+                    getLatLngBounds(runPath).build(),
                     binding.map.width,
                     binding.map.height,
                     (binding.map.width * 0.05f).toInt()
@@ -166,21 +163,16 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
                     googleMap?.setOnMapLoadedCallback {
                         googleMap?.snapshot { secondImage ->
                             run.apply {
-                                lightModeImage = firstImage
-                                darkModeImage = secondImage
+                                lightModeImage = if (!isDarkModeEnabled) firstImage else secondImage
+                                darkModeImage = if (!isDarkModeEnabled) secondImage else firstImage
                             }
-                            if (isDarkModeEnabled)
-                                run.apply {
-                                    lightModeImage = secondImage
-                                    darkModeImage = firstImage
-                                }
                             trackingViewModel.saveRun(run)
                             cancelRun()
                         }
                     }
                 }
             }
-        }, 2000)
+        }
         return true
     }
 
@@ -190,6 +182,14 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
         layoutParams.dimensionRatio = "h,1:1"
         binding.map.layoutParams = layoutParams
     }
+
+    private fun getLatLngBounds(list: MutableList<MutableList<LatLng>>) =
+        LatLngBounds.Builder().apply {
+            list.forEach { line ->
+                if (line.isEmpty()) return@forEach
+                line.forEach { include(it) }
+            }
+        }
 
     private fun getCaloriesBurnt() = round(((distanceInMetres / 1000.0) * weight) * 100) / 100
 

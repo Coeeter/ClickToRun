@@ -15,6 +15,10 @@ import com.example.clicktorun.utils.hideKeyboard
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
@@ -123,12 +127,10 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onShown(transientBottomBar: Snackbar?) {
                 super.onShown(transientBottomBar)
-                Handler(requireActivity().mainLooper).postDelayed(
-                    {
-                        findNavController().popBackStack()
-                    },
-                    3000
-                )
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(3000L)
+                    findNavController().popBackStack()
+                }
             }
 
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
