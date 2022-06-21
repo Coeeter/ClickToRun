@@ -1,33 +1,33 @@
-package com.example.clicktorun.ui.auth
+package com.example.clicktorun.ui.fragments.auth
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import com.example.clicktorun.databinding.ActivitySignUpBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.clicktorun.R
+import com.example.clicktorun.databinding.FragmentSignUpBinding
+import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.utils.createSnackBar
-import com.example.clicktorun.utils.endActivityWithAnimation
 import com.example.clicktorun.utils.hideKeyboard
-import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignUpActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySignUpBinding
+class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
+    private lateinit var binding: FragmentSignUpBinding
     private val authViewModel: AuthViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySignUpBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentSignUpBinding.bind(view)
         setUpViews()
         setUpListeners()
     }
+
 
     private fun setUpViews() {
         authViewModel.email?.let {
@@ -43,16 +43,11 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun setUpListeners() {
         binding.apply {
-            toolbar.setNavigationOnClickListener { finish() }
+            toolbar.setNavigationOnClickListener {
+                findNavController().popBackStack()
+            }
             linkLogin.setOnClickListener {
-                startActivityWithAnimation(
-                    Intent(
-                        this@SignUpActivity,
-                        LoginActivity::class.java
-                    ).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                )
+                findNavController().popBackStack()
             }
             emailInput.editText?.addTextChangedListener {
                 emailInput.isErrorEnabled = false
@@ -69,11 +64,11 @@ class SignUpActivity : AppCompatActivity() {
                 authViewModel.confirmPassword = it.toString()
             }
             btnSignUp.setOnClickListener {
-                hideKeyboard()
+                requireActivity().hideKeyboard()
                 authViewModel.signUp()
             }
         }
-        authViewModel.authState.observe(this) {
+        authViewModel.authState.observe(viewLifecycleOwner) {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
                     progress.visibility = View.VISIBLE
@@ -128,11 +123,9 @@ class SignUpActivity : AppCompatActivity() {
         ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onShown(transientBottomBar: Snackbar?) {
                 super.onShown(transientBottomBar)
-                Handler(mainLooper).postDelayed(
+                Handler(requireActivity().mainLooper).postDelayed(
                     {
-                        if (!this@SignUpActivity.isFinishing ||
-                            !this@SignUpActivity.isDestroyed
-                        ) finish()
+                        findNavController().popBackStack()
                     },
                     3000
                 )
@@ -140,13 +133,8 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
-                finish()
+                findNavController().popBackStack()
             }
         }).show()
-    }
-
-    override fun finish() {
-        super.finish()
-        endActivityWithAnimation()
     }
 }

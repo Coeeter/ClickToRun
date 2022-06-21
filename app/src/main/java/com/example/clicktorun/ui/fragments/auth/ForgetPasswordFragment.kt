@@ -1,30 +1,29 @@
-package com.example.clicktorun.ui.auth
+package com.example.clicktorun.ui.fragments.auth
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import com.example.clicktorun.databinding.ActivityForgetPasswordBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.clicktorun.R
+import com.example.clicktorun.databinding.FragmentForgetPasswordBinding
+import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.utils.createSnackBar
-import com.example.clicktorun.utils.endActivityWithAnimation
 import com.example.clicktorun.utils.hideKeyboard
-import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ForgetPasswordActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityForgetPasswordBinding
+class ForgetPasswordFragment : Fragment(R.layout.fragment_forget_password) {
+    private lateinit var binding: FragmentForgetPasswordBinding
     private val authViewModel: AuthViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityForgetPasswordBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentForgetPasswordBinding.bind(view)
         setUpViews()
         setUpListeners()
     }
@@ -37,25 +36,19 @@ class ForgetPasswordActivity : AppCompatActivity() {
 
     private fun setUpListeners() {
         binding.apply {
-            toolbar.setNavigationOnClickListener { finish() }
-            linkSignUp.setOnClickListener {
-                startActivityWithAnimation(
-                    Intent(
-                        this@ForgetPasswordActivity,
-                        SignUpActivity::class.java
-                    )
-                )
+            toolbar.setNavigationOnClickListener {
+                findNavController().popBackStack()
             }
             emailInput.editText?.addTextChangedListener {
                 emailInput.isErrorEnabled = false
                 authViewModel.email = it.toString()
             }
             btnSendEmail.setOnClickListener {
-                hideKeyboard()
+                requireActivity().hideKeyboard()
                 authViewModel.sendPasswordResetLinkToEmail()
             }
         }
-        authViewModel.authState.observe(this) {
+        authViewModel.authState.observe(viewLifecycleOwner) {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
                     progress.visibility = View.VISIBLE
@@ -85,11 +78,9 @@ class ForgetPasswordActivity : AppCompatActivity() {
         ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onShown(transientBottomBar: Snackbar?) {
                 super.onShown(transientBottomBar)
-                Handler(mainLooper).postDelayed(
+                Handler(requireActivity().mainLooper).postDelayed(
                     {
-                        if (!this@ForgetPasswordActivity.isFinishing ||
-                            !this@ForgetPasswordActivity.isDestroyed
-                        ) finish()
+                        findNavController().popBackStack()
                     },
                     3000
                 )
@@ -97,13 +88,8 @@ class ForgetPasswordActivity : AppCompatActivity() {
 
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
-                finish()
+                findNavController().popBackStack()
             }
         }).show()
-    }
-
-    override fun finish() {
-        super.finish()
-        endActivityWithAnimation()
     }
 }

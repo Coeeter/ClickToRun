@@ -6,7 +6,7 @@
     app:startDestination="@id/miHome">
 
     <action
-        android:id="@+id/action_main_to_trackingFragment"
+        android:id="@+id/main_to_tracking"
         app:destination="@id/trackingFragment"
         app:launchSingleTop="true"
         app:popUpTo="@id/miHome"
@@ -14,11 +14,11 @@
 
     <fragment
         android:id="@+id/miHome"
-        android:name="com.example.clicktorun.ui.home.HomeFragment"
+        android:name="com.example.clicktorun.ui.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_miHome_to_trackingFragment"
+            android:id="@+id/home_to_tracking"
             app:destination="@id/trackingFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/miHome"
@@ -26,22 +26,22 @@
     </fragment>
     <fragment
         android:id="@+id/miInsights"
-        android:name="com.example.clicktorun.ui.insights.InsightsFragment"
+        android:name="com.example.clicktorun.ui.fragments.InsightsFragment"
         android:label="fragment_insights"
         tools:layout="@layout/fragment_insights" />
     <fragment
         android:id="@+id/miLeaderboard"
-        android:name="com.example.clicktorun.ui.leaderboard.LeaderboardFragment"
+        android:name="com.example.clicktorun.ui.fragments.LeaderboardFragment"
         android:label="fragment_leaderboard"
         tools:layout="@layout/fragment_leaderboard" />
     <fragment
         android:id="@+id/miSettings"
-        android:name="com.example.clicktorun.ui.settings.SettingsFragment"
+        android:name="com.example.clicktorun.ui.fragments.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/trackingFragment"
-        android:name="com.example.clicktorun.ui.tracking.TrackingFragment"
+        android:name="com.example.clicktorun.ui.fragments.TrackingFragment"
         android:label="fragment_tracking"
         tools:layout="@layout/fragment_tracking">
         <action

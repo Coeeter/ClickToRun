@@ -1,31 +1,33 @@
-package com.example.clicktorun.ui.auth
+package com.example.clicktorun.ui.fragments.auth
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import com.example.clicktorun.databinding.ActivityUserDetailsBinding
-import com.example.clicktorun.ui.MainActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.example.clicktorun.R
+import com.example.clicktorun.databinding.FragmentUserDetailsBinding
+import com.example.clicktorun.ui.activities.MainActivity
+import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.hideKeyboard
 import com.example.clicktorun.utils.startActivityWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UserDetailsActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityUserDetailsBinding
+class UserDetailsFragment : Fragment(R.layout.fragment_user_details) {
+    private lateinit var binding: FragmentUserDetailsBinding
     val authViewModel: AuthViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityUserDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentUserDetailsBinding.bind(view)
         setUpViews()
         setUIListeners()
         setUpViewModelListener()
     }
+
 
     private fun setUpViews() {
         authViewModel.username?.let { binding.usernameInput.editText?.setText(it) }
@@ -47,23 +49,23 @@ class UserDetailsActivity : AppCompatActivity() {
             authViewModel.height = text?.toString()
         }
         binding.btnSubmit.setOnClickListener {
-            hideKeyboard()
+            requireActivity().hideKeyboard()
             authViewModel.insertUser()
         }
     }
 
     private fun setUpViewModelListener() {
-        authViewModel.authState.observe(this) {
+        authViewModel.authState.observe(viewLifecycleOwner) {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
                     progress.visibility = View.VISIBLE
                 }
                 is AuthViewModel.AuthState.Success -> binding.apply {
                     hideLoading()
-                    Intent(this@UserDetailsActivity, MainActivity::class.java).apply {
+                    Intent(requireContext(), MainActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivityWithAnimation(this)
-                        finish()
+                        requireActivity().startActivityWithAnimation(this)
+                        requireActivity().finish()
                     }
                 }
                 is AuthViewModel.AuthState.InvalidUsername -> binding.apply {

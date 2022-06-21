@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui.auth
+package com.example.clicktorun.ui.viewmodels
 
 import android.util.Patterns
 import androidx.lifecycle.LiveData

@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui.insights
+package com.example.clicktorun.ui.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle

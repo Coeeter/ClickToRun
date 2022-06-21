@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui.tracking
+package com.example.clicktorun.ui.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

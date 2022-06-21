@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui
+package com.example.clicktorun.ui.activities
 
 import android.Manifest
 import android.content.Intent
@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.clicktorun.MainNavigationDirections
 import com.example.clicktorun.R
 import com.example.clicktorun.databinding.ActivityMainBinding
 import com.example.clicktorun.services.RunService
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkIfNeedToNavigateToTrackingFragment(intent: Intent) {
         if (intent.action == ACTION_NAVIGATE_TO_TRACKING ||
             RunService.isTracking.value == true
-        ) navController.navigate(R.id.action_main_to_trackingFragment)
+        ) navController.navigate(MainNavigationDirections.mainToTracking())
     }
 
 }

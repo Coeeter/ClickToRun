@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui.settings
+package com.example.clicktorun.ui.fragments
 
 import android.content.Context
 import android.content.Intent
@@ -11,9 +11,10 @@ import com.example.clicktorun.R
 import com.example.clicktorun.data.models.User
 import com.example.clicktorun.databinding.FragmentSettingsBinding
 import com.example.clicktorun.services.RunService
-import com.example.clicktorun.ui.auth.AuthViewModel
-import com.example.clicktorun.ui.auth.LoginActivity
-import com.example.clicktorun.ui.tracking.TrackingViewModel
+import com.example.clicktorun.ui.activities.AuthActivity
+import com.example.clicktorun.ui.viewmodels.AuthViewModel
+import com.example.clicktorun.ui.viewmodels.TrackingViewModel
+import com.example.clicktorun.utils.ACTION_NAVIGATE_TO_LOGIN
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -38,11 +39,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         binding.btnSignOut.setOnClickListener {
             if (RunService.isTracking.value == true) return@setOnClickListener
             authViewModel.signOut()
-            Intent(requireContext(), LoginActivity::class.java).let {
-                requireActivity().apply {
-                    startActivityWithAnimation(it)
-                    finish()
-                }
+            Intent(requireContext(), AuthActivity::class.java).run {
+                action = ACTION_NAVIGATE_TO_LOGIN
+                requireActivity().startActivityWithAnimation(this)
+                requireActivity().finish()
             }
         }
         binding.btnDeleteAllRuns.setOnClickListener {

@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui.home
+package com.example.clicktorun.ui.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.clicktorun.R
 import com.example.clicktorun.databinding.FragmentHomeBinding
 import com.example.clicktorun.ui.adapter.RunAdapter
-import com.example.clicktorun.ui.tracking.TrackingViewModel
+import com.example.clicktorun.ui.viewmodels.TrackingViewModel
 import com.example.clicktorun.utils.isNightModeEnabled
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,7 +33,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             )
         }
         binding.btnAddRun.setOnClickListener {
-            findNavController().navigate(R.id.action_miHome_to_trackingFragment)
+            findNavController().navigate(HomeFragmentDirections.homeToTracking())
         }
         trackingViewModel.user.observe(viewLifecycleOwner) { user ->
             user ?: return@observe

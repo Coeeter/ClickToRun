@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_navigation"
+    app:startDestination="@id/splashScreenFragment">
+
+    <action
+        android:id="@+id/main_to_login"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/splashScreenFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.clicktorun.ui.fragments.auth.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/login_to_forgetPassword"
+            app:destination="@id/forgetPasswordFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/login_to_signUp"
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/login_to_userDetails"
+            app:destination="@id/userDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/forgetPasswordFragment"
+        android:name="com.example.clicktorun.ui.fragments.auth.ForgetPasswordFragment"
+        android:label="fragment_forget_password"
+        tools:layout="@layout/fragment_forget_password" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.clicktorun.ui.fragments.auth.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" />
+    <fragment
+        android:id="@+id/userDetailsFragment"
+        android:name="com.example.clicktorun.ui.fragments.auth.UserDetailsFragment"
+        android:label="fragment_user_details"
+        tools:layout="@layout/fragment_user_details" />
+    <fragment
+        android:id="@+id/splashScreenFragment"
+        android:name="com.example.clicktorun.ui.fragments.auth.SplashScreenFragment"
+        android:label="fragment_splash_screen"
+        tools:layout="@layout/fragment_splash_screen">
+        <action
+            android:id="@+id/splash_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/splashScreenFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/splash_to_userDetails"
+            app:destination="@id/userDetailsFragment"
+            app:popUpTo="@id/splashScreenFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

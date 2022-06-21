@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.clicktorun.R
-import com.example.clicktorun.ui.MainActivity
+import com.example.clicktorun.ui.activities.MainActivity
 import com.example.clicktorun.utils.ACTION_NAVIGATE_TO_TRACKING
 import com.example.clicktorun.utils.NOTIFICATION_CHANNEL_ID
 import com.google.android.gms.location.FusedLocationProviderClient

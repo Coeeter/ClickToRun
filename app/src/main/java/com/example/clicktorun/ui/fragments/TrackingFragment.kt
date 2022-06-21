@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui.tracking
+package com.example.clicktorun.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,7 +15,7 @@ import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.FragmentTrackingBinding
 import com.example.clicktorun.services.Line
 import com.example.clicktorun.services.RunService
-import com.example.clicktorun.ui.auth.UserDetailsActivity
+import com.example.clicktorun.ui.viewmodels.TrackingViewModel
 import com.example.clicktorun.utils.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -75,12 +75,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             )
         }
         trackingViewModel.user.observe(viewLifecycleOwner) {
-            it ?: return@observe run {
-                Intent(requireContext(), UserDetailsActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    requireActivity().startActivityWithAnimation(this)
-                }
-            }
+            it ?: return@observe
             weight = it.weightInKilograms
             email = it.email
         }

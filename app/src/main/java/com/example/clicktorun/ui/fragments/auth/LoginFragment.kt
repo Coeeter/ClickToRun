@@ -1,13 +1,16 @@
-package com.example.clicktorun.ui.auth
+package com.example.clicktorun.ui.fragments.auth
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import com.example.clicktorun.databinding.ActivityLoginBinding
-import com.example.clicktorun.ui.MainActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.clicktorun.R
+import com.example.clicktorun.databinding.FragmentLoginBinding
+import com.example.clicktorun.ui.activities.MainActivity
+import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.hideKeyboard
 import com.example.clicktorun.utils.startActivityWithAnimation
@@ -17,14 +20,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityLoginBinding
+class LoginFragment : Fragment(R.layout.fragment_login) {
+    private lateinit var binding: FragmentLoginBinding
     private val authViewModel: AuthViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentLoginBinding.bind(view)
         setUpViews()
         setUpListeners()
     }
@@ -49,27 +51,17 @@ class LoginActivity : AppCompatActivity() {
                 authViewModel.password = it.toString()
             }
             btnLogin.setOnClickListener {
-                hideKeyboard()
+                requireActivity().hideKeyboard()
                 authViewModel.logIn()
             }
             linkSignUp.setOnClickListener {
-                startActivityWithAnimation(
-                    Intent(
-                        this@LoginActivity,
-                        SignUpActivity::class.java
-                    )
-                )
+                findNavController().navigate(LoginFragmentDirections.loginToSignUp())
             }
             linkForgetPassword.setOnClickListener {
-                startActivityWithAnimation(
-                    Intent(
-                        this@LoginActivity,
-                        ForgetPasswordActivity::class.java
-                    )
-                )
+                findNavController().navigate(LoginFragmentDirections.loginToForgetPassword())
             }
         }
-        authViewModel.authState.observe(this) {
+        authViewModel.authState.observe(viewLifecycleOwner) {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
                     progress.visibility = View.VISIBLE
@@ -110,15 +102,11 @@ class LoginActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val state = authViewModel.getCurrentUserState()
             if (state["firestoreUser"] == null)
-                return@launch Intent(this@LoginActivity, UserDetailsActivity::class.java).run {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivityWithAnimation(this)
-                    finish()
-                }
-            Intent(this@LoginActivity, MainActivity::class.java).run {
+                return@launch findNavController().navigate(LoginFragmentDirections.loginToUserDetails())
+            Intent(requireContext(), MainActivity::class.java).run {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivityWithAnimation(this)
-                finish()
+                requireActivity().startActivityWithAnimation(this)
+                requireActivity().finish()
             }
         }
     }
