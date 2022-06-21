@@ -1,6 +1,5 @@
 package com.example.clicktorun.ui.settings
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -17,6 +16,7 @@ import com.example.clicktorun.ui.auth.LoginActivity
 import com.example.clicktorun.ui.tracking.TrackingViewModel
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.startActivityWithAnimation
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -48,11 +48,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         binding.btnDeleteAllRuns.setOnClickListener {
             showDeleteAlertDialog(requireContext())
         }
-
     }
 
     private fun showDeleteAlertDialog(context: Context) {
-        AlertDialog.Builder(context)
+        MaterialAlertDialogBuilder(context, R.style.AlertDialogCustom)
             .setTitle("Delete all Runs?")
             .setMessage("Are you sure you want to delete all runs and lose its data forever?")
             .setPositiveButton("Yes") { dialog, _ ->

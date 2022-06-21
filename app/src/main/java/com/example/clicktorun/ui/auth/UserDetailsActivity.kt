@@ -9,6 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityUserDetailsBinding
 import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.createSnackBar
+import com.example.clicktorun.utils.hideKeyboard
 import com.example.clicktorun.utils.startActivityWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,6 +47,7 @@ class UserDetailsActivity : AppCompatActivity() {
             authViewModel.height = text?.toString()
         }
         binding.btnSubmit.setOnClickListener {
+            hideKeyboard()
             authViewModel.insertUser()
         }
     }

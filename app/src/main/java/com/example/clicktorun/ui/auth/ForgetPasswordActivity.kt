@@ -10,6 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityForgetPasswordBinding
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.endActivityWithAnimation
+import com.example.clicktorun.utils.hideKeyboard
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -50,6 +51,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
                 authViewModel.email = it.toString()
             }
             btnSendEmail.setOnClickListener {
+                hideKeyboard()
                 authViewModel.sendPasswordResetLinkToEmail()
             }
         }

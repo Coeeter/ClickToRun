@@ -8,10 +8,12 @@
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_button_background.xml" value="0.2135" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_dark_mode_background.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_fab_background.xml" value="0.1875" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_fab_dark_mode_background.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_gradient_background.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_gradient_bg.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_light_mode_background.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_add.xml" value="0.1185" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_add_dark_mode.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_app_icon_round.xml" value="0.1955" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_app_icon_round_shadow.xml" value="0.1955" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_baseline_access_time_24.xml" value="0.1875" />
@@ -33,12 +35,17 @@
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/main_background_color.xml" value="0.3345" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/navigation_bar_shadow.xml" value="0.279" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/splash_icon.xml" value="0.1875" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout-land/activity_forget_password.xml" value="0.18" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout-land/activity_login.xml" value="0.22" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout-land/activity_sign_up.xml" value="0.22" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout-land/activity_user_details.xml" value="0.2" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/activity_forget_password.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/activity_sign_up.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/activity_splash_screen.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/activity_user_details.xml" value="0.3489583333333333" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/dialog_cancel_run.xml" value="0.3489583333333333" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/dialog_image.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/fragment_insights.xml" value="0.36666666666666664" />

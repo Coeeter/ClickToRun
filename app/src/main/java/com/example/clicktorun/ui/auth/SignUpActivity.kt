@@ -10,6 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivitySignUpBinding
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.endActivityWithAnimation
+import com.example.clicktorun.utils.hideKeyboard
 import com.example.clicktorun.utils.startActivityWithAnimation
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -67,7 +68,10 @@ class SignUpActivity : AppCompatActivity() {
                 passwordInput.isErrorEnabled = false
                 authViewModel.confirmPassword = it.toString()
             }
-            btnSignUp.setOnClickListener { authViewModel.signUp() }
+            btnSignUp.setOnClickListener {
+                hideKeyboard()
+                authViewModel.signUp()
+            }
         }
         authViewModel.authState.observe(this) {
             when (it) {

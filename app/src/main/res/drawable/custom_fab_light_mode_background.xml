@@ -11,7 +11,9 @@
                         android:startColor="@color/primary" />
                 </shape>
             </item>
-            <item android:drawable="@drawable/ic_add" android:gravity="center" />
+            <item
+                android:drawable="@drawable/ic_add"
+                android:gravity="center" />
         </layer-list>
     </item>
 </ripple>

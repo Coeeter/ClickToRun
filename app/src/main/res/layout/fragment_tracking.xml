@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/custom_gradient_background"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:theme="@style/Theme.ClickToRun.ToolbarOverlay"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar

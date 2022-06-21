@@ -9,6 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.clicktorun.databinding.ActivityLoginBinding
 import com.example.clicktorun.ui.MainActivity
 import com.example.clicktorun.utils.createSnackBar
+import com.example.clicktorun.utils.hideKeyboard
 import com.example.clicktorun.utils.startActivityWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -47,7 +48,10 @@ class LoginActivity : AppCompatActivity() {
                 passwordInput.isErrorEnabled = false
                 authViewModel.password = it.toString()
             }
-            btnLogin.setOnClickListener { authViewModel.logIn() }
+            btnLogin.setOnClickListener {
+                hideKeyboard()
+                authViewModel.logIn()
+            }
             linkSignUp.setOnClickListener {
                 startActivityWithAnimation(
                     Intent(

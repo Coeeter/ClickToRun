@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/custom_gradient_background"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:theme="@style/Theme.ClickToRun.ToolbarOverlay"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
@@ -35,47 +35,50 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/toolbarContainer">
+
         <ImageView
             android:id="@+id/noRunsImage"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:src="@drawable/ic_no_runs"
-            android:layout_marginTop="15dp"
             android:layout_marginHorizontal="75dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_empty_run_list"
+            app:layout_constraintBottom_toTopOf="@id/noRunsText1"
             app:layout_constraintDimensionRatio="h,1:1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/noRunsText1"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/noRunsText1"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="There are no runs recorded yet"
-            app:layout_constraintTop_toBottomOf="@id/noRunsImage"
-            app:layout_constraintStart_toStartOf="@id/noRunsImage"
             app:layout_constraintEnd_toEndOf="@id/noRunsImage"
-            style="@style/TextAppearance.MaterialComponents.Headline5" />
+            app:layout_constraintStart_toStartOf="@id/noRunsImage"
+            app:layout_constraintTop_toBottomOf="@id/noRunsImage" />
+
         <TextView
             android:id="@+id/noRunsText2"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Try adding one today!"
-            app:layout_constraintTop_toBottomOf="@id/noRunsText1"
-            app:layout_constraintStart_toStartOf="@id/noRunsImage"
-            app:layout_constraintEnd_toEndOf="@id/noRunsImage"
             android:textSize="20sp"
-            style="@style/TextAppearance.MaterialComponents.Headline5" />
+            app:layout_constraintEnd_toEndOf="@id/noRunsImage"
+            app:layout_constraintStart_toStartOf="@id/noRunsImage"
+            app:layout_constraintTop_toBottomOf="@id/noRunsText1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/btnAddRun"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:background="@drawable/custom_fab_background"
-        android:elevation="6dp"
         android:layout_margin="10dp"
+        android:background="@drawable/custom_fab_light_mode_background"
+        android:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

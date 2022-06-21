@@ -1,11 +1,9 @@
 package com.example.clicktorun.ui.tracking
 
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -22,6 +20,7 @@ import com.example.clicktorun.utils.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.round
 
@@ -251,7 +250,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     }
 
     private fun showDialog(): Boolean {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogCustom)
             .setTitle("Cancel the run?")
             .setMessage("Are you sure you want to delete the current run and lose all its data forever?")
             .setPositiveButton("Yes") { dialog, _ ->
