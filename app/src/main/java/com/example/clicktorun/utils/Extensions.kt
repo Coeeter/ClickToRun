@@ -8,17 +8,13 @@ import android.location.Location
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.example.clicktorun.R
-import com.example.clicktorun.services.Line
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import kotlin.math.roundToInt
 
 fun Activity.startActivityWithAnimation(intent: Intent) {
     startActivity(intent)
     overridePendingTransition(R.anim.slide_in_right, R.anim.exit_animation)
-}
-
-fun Activity.endActivityWithAnimation() {
-    overridePendingTransition(R.anim.enter_animation, R.anim.slide_out_right)
 }
 
 fun Long.toTimeString(): String {
@@ -45,7 +41,7 @@ fun Int.formatDistance(): String {
     return "${kilometres}km ${metres}m"
 }
 
-fun MutableList<Line>.getDistance(): Int {
+fun MutableList<MutableList<LatLng>>.getDistance(): Int {
     var totalDistance = 0f
     this.forEach { list ->
         if (list.size == 0) return@forEach

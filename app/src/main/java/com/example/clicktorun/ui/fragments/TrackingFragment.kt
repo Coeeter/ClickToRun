@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.FragmentTrackingBinding
-import com.example.clicktorun.services.Line
 import com.example.clicktorun.services.RunService
 import com.example.clicktorun.ui.viewmodels.TrackingViewModel
 import com.example.clicktorun.utils.*
@@ -29,7 +28,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private lateinit var binding: FragmentTrackingBinding
     private var googleMap: GoogleMap? = null
     private val trackingViewModel: TrackingViewModel by viewModels()
-    private var runPath: MutableList<Line> = mutableListOf()
+    private var runPath: MutableList<MutableList<LatLng>> = mutableListOf()
     private var distanceInMetres = 0
     private var timeTakenInMilliseconds = 0L
     private var isDarkModeEnabled = false

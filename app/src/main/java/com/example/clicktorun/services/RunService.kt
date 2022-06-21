@@ -23,8 +23,6 @@ import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-typealias Line = MutableList<LatLng>
-
 @AndroidEntryPoint
 class RunService : LifecycleService() {
     @Inject
@@ -49,7 +47,7 @@ class RunService : LifecycleService() {
 
     companion object {
         val isTracking = MutableLiveData<Boolean>()
-        val runPath = MutableLiveData<MutableList<Line>>()
+        val runPath = MutableLiveData<MutableList<MutableList<LatLng>>>()
         val distanceRanInMetres = MutableLiveData<Int>()
         val timeTaken = MutableLiveData<Long>()
     }
