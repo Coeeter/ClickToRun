@@ -27,6 +27,6 @@ ClickToRun is an android native app built using kotlin with MVVM architecture wi
 
 ## Installation:
 ### If you want to try using the app ensure you add the line below by using your own Google Maps API key to the `local.properties` file
-```
-GOOGLE_MAPS_API_KEY=YOUR_API_KEY
+```properties
+GOOGLE_MAPS_API_KEY = YOUR_API_KEY
 ```
