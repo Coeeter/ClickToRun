@@ -26,7 +26,7 @@ ClickToRun is an android native app built using kotlin with MVVM architecture wi
 - A chats function where users can chat with each other
 
 ## Installation:
-### If you want to try using the app ensure you add the line below by using your own Google Maps API key to the `local.properties` file
+If you want to try using the app, you can download it as a zip folder from [here](https://github.com/Coeeter/ClickToRun) or clone it from [here](https://github.com/Coeeter/ClickToRun.git).When running the app ensure you add the line below by using your own Google Maps API key to the `local.properties` file
 ```properties
 GOOGLE_MAPS_API_KEY = YOUR_API_KEY
 ```

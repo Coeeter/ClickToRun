@@ -19,110 +19,107 @@
         tools:src="@mipmap/ic_launcher" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/details"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@drawable/custom_light_mode_background"
         android:elevation="10dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@id/guide"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/runImage"
         app:layout_constraintStart_toStartOf="@id/runImage"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/runImage">
 
-        <ImageView
-            android:id="@+id/distanceRanIcon"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_running"
-            app:layout_constraintBottom_toTopOf="@id/distanceRan"
-            app:layout_constraintDimensionRatio="h,1:1"
-            app:layout_constraintEnd_toStartOf="@id/timeTakenIcon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/distanceRan"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/distanceLabel"
+            app:layout_constraintEnd_toStartOf="@id/timeTaken"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="10.793" />
+
+        <TextView
+            android:id="@+id/distanceLabel"
+            style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="KM"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/distanceRanIcon"
-            app:layout_constraintStart_toStartOf="@id/distanceRanIcon"
-            app:layout_constraintTop_toBottomOf="@id/distanceRanIcon"
-            tools:text="10km 793m" />
-
-        <ImageView
-            android:id="@+id/timeTakenIcon"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_baseline_access_time_24"
-            app:layout_constraintBottom_toTopOf="@id/timeTaken"
-            app:layout_constraintDimensionRatio="h,1:1"
-            app:layout_constraintEnd_toStartOf="@id/caloriesBurntIcon"
-            app:layout_constraintStart_toEndOf="@id/distanceRanIcon"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="@id/distanceRan"
+            app:layout_constraintStart_toStartOf="@id/distanceRan"
+            app:layout_constraintTop_toBottomOf="@id/distanceRan" />
 
         <TextView
             android:id="@+id/timeTaken"
-            android:layout_width="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/timeTakenIcon"
-            app:layout_constraintStart_toStartOf="@id/timeTakenIcon"
-            app:layout_constraintTop_toBottomOf="@id/timeTakenIcon"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/timeLabel"
+            app:layout_constraintEnd_toStartOf="@id/caloriesBurnt"
+            app:layout_constraintStart_toEndOf="@id/distanceRan"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="00:34:57" />
 
-        <ImageView
-            android:id="@+id/caloriesBurntIcon"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_calories_burnt"
-            app:layout_constraintBottom_toTopOf="@id/caloriesBurnt"
-            app:layout_constraintDimensionRatio="h,1:1"
-            app:layout_constraintEnd_toStartOf="@id/averageSpeedIcon"
-            app:layout_constraintStart_toEndOf="@id/timeTakenIcon"
-            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/timeLabel"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/timeTaken"
+            app:layout_constraintStart_toStartOf="@id/timeTaken"
+            app:layout_constraintTop_toBottomOf="@id/timeTaken" />
 
         <TextView
             android:id="@+id/caloriesBurnt"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/caloriesLabel"
+            app:layout_constraintEnd_toStartOf="@id/averageSpeed"
+            app:layout_constraintStart_toEndOf="@id/timeTaken"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="547" />
+
+        <TextView
+            android:id="@+id/caloriesLabel"
+            style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Kcal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/caloriesBurntIcon"
-            app:layout_constraintStart_toStartOf="@id/caloriesBurntIcon"
-            app:layout_constraintTop_toBottomOf="@id/caloriesBurntIcon"
-            tools:text="547kcal" />
-
-        <ImageView
-            android:id="@+id/averageSpeedIcon"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_baseline_speed_24"
-            app:layout_constraintBottom_toTopOf="@id/averageSpeed"
-            app:layout_constraintDimensionRatio="h,1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/caloriesBurntIcon"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="@id/caloriesBurnt"
+            app:layout_constraintStart_toStartOf="@id/caloriesBurnt"
+            app:layout_constraintTop_toBottomOf="@id/caloriesBurnt" />
 
         <TextView
             android:id="@+id/averageSpeed"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/speedLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/caloriesBurnt"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="24" />
+
+        <TextView
+            android:id="@+id/speedLabel"
+            style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Km/h"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/averageSpeedIcon"
-            app:layout_constraintStart_toStartOf="@id/averageSpeedIcon"
-            app:layout_constraintTop_toBottomOf="@id/averageSpeedIcon"
-            tools:text="547kcal" />
-
-
+            app:layout_constraintEnd_toEndOf="@id/averageSpeed"
+            app:layout_constraintStart_toStartOf="@id/averageSpeed"
+            app:layout_constraintTop_toBottomOf="@id/averageSpeed" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.25" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

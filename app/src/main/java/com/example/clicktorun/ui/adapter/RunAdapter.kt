@@ -11,6 +11,7 @@ import com.example.clicktorun.databinding.RecyclerviewRunDetailsItemBinding
 import com.example.clicktorun.utils.formatDistance
 import com.example.clicktorun.utils.isNightModeEnabled
 import com.example.clicktorun.utils.toTimeString
+import kotlin.math.round
 
 class RunAdapter : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
 
@@ -37,21 +38,17 @@ class RunAdapter : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
         val run = _runList[position]
         holder.binding.apply {
             runImage.setImageBitmap(run.lightModeImage)
-            details.background = AppCompatResources.getDrawable(
-                root.context,
-                R.drawable.custom_light_mode_background
-            )
-            if (root.context.isNightModeEnabled()) {
+            if (holder.binding.root.context.isNightModeEnabled())
                 runImage.setImageBitmap(run.darkModeImage)
-                details.background = AppCompatResources.getDrawable(
-                    root.context,
-                    R.drawable.custom_dark_mode_background
-                )
+            distanceLabel.text = "Km"
+            distanceRan.text = (run.distanceRanInMetres / 1000.0).toString()
+            if (run.distanceRanInMetres < 1000) {
+                distanceLabel.text = "m"
+                distanceRan.text = run.distanceRanInMetres.toString()
             }
-            distanceRan.text = run.distanceRanInMetres.formatDistance()
             timeTaken.text = run.timeTakenInMilliseconds.toTimeString()
-            averageSpeed.text = "${run.averageSpeedInKilometersPerHour!!.toInt()}km/h"
-            caloriesBurnt.text = "${run.caloriesBurnt!!.toInt()}kcal"
+            averageSpeed.text = "${round(run.averageSpeedInKilometersPerHour!! * 100) / 100.0}"
+            caloriesBurnt.text = "${run.caloriesBurnt!!.toInt()}"
         }
     }
 

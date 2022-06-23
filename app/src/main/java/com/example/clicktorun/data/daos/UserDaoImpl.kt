@@ -16,7 +16,6 @@ class UserDaoImpl(
                 .document(firebaseAuth.currentUser!!.email!!)
                 .get()
                 .await()
-            Log.d("poly", documentSnapshot.toString())
             if (documentSnapshot.exists() &&
                 documentSnapshot.contains("username") &&
                 documentSnapshot.contains("heightInCentimetres") &&
