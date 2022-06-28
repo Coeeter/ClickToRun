@@ -1,7 +1,6 @@
 package com.example.clicktorun.ui.fragments.auth
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment

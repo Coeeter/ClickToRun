@@ -48,7 +48,7 @@ object ServiceModule {
         .Builder(context, NOTIFICATION_CHANNEL_ID)
         .setContentTitle("Tracking your run!")
         .setContentText("00:00:00")
-        .setSmallIcon(R.drawable.ic_running)
+        .setSmallIcon(R.drawable.ic_shoes)
         .setAutoCancel(false)
         .setOngoing(true)
         .setContentIntent(pendingIntent)

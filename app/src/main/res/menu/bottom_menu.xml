@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/miHome"
-        android:icon="@drawable/ic_home"
-        android:title="Home" />
+        android:id="@+id/miYourRuns"
+        android:icon="@drawable/ic_baseline_directions_run_24"
+        android:title="Your Runs" />
+    <item
+        android:id="@+id/miExplore"
+        android:icon="@drawable/ic_baseline_explore_24"
+        android:title="Explore" />
     <item
         android:id="@+id/miInsights"
         android:icon="@drawable/ic_insights"
         android:title="Insights" />
-    <item
-        android:id="@+id/miLeaderboard"
-        android:icon="@drawable/ic_leaderboard"
-        android:title="Leaderboard" />
     <item
         android:id="@+id/miSettings"
         android:icon="@drawable/ic_settings"

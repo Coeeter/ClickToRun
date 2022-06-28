@@ -3,25 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/miHome">
+    app:startDestination="@id/miYourRuns">
 
     <action
         android:id="@+id/main_to_tracking"
         app:destination="@id/trackingFragment"
         app:launchSingleTop="true"
-        app:popUpTo="@id/miHome"
+        app:popUpTo="@id/miYourRuns"
         app:popUpToInclusive="true" />
 
     <fragment
-        android:id="@+id/miHome"
-        android:name="com.example.clicktorun.ui.fragments.HomeFragment"
+        android:id="@+id/miYourRuns"
+        android:name="com.example.clicktorun.ui.fragments.YourRunsFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home">
+        tools:layout="@layout/fragment_runs">
         <action
-            android:id="@+id/home_to_tracking"
+            android:id="@+id/runs_to_tracking"
             app:destination="@id/trackingFragment"
             app:launchSingleTop="true"
-            app:popUpTo="@+id/miHome"
+            app:popUpTo="@+id/miYourRuns"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -30,10 +30,10 @@
         android:label="fragment_insights"
         tools:layout="@layout/fragment_insights" />
     <fragment
-        android:id="@+id/miLeaderboard"
-        android:name="com.example.clicktorun.ui.fragments.LeaderboardFragment"
+        android:id="@+id/miExplore"
+        android:name="com.example.clicktorun.ui.fragments.ExploreFragment"
         android:label="fragment_leaderboard"
-        tools:layout="@layout/fragment_leaderboard" />
+        tools:layout="@layout/fragment_explore" />
     <fragment
         android:id="@+id/miSettings"
         android:name="com.example.clicktorun.ui.fragments.SettingsFragment"
@@ -46,7 +46,7 @@
         tools:layout="@layout/fragment_tracking">
         <action
             android:id="@+id/action_trackingFragment_to_miHome"
-            app:destination="@id/miHome"
+            app:destination="@id/miYourRuns"
             app:popUpTo="@id/trackingFragment"
             app:popUpToInclusive="true" />
     </fragment>

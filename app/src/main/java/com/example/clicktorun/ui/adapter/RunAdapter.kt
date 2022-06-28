@@ -2,24 +2,17 @@ package com.example.clicktorun.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.RecyclerviewRunDetailsItemBinding
-import com.example.clicktorun.utils.formatDistance
 import com.example.clicktorun.utils.isNightModeEnabled
 import com.example.clicktorun.utils.toTimeString
 import kotlin.math.round
 
-class RunAdapter : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
-
-    private var _runList = listOf<Run>()
-    fun setRunList(runList: List<Run>) {
-        _runList = runList
-        notifyDataSetChanged()
-    }
+class RunAdapter(
+    private val runList: List<Run>
+) : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
@@ -35,7 +28,7 @@ class RunAdapter : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val run = _runList[position]
+        val run = runList[position]
         holder.binding.apply {
             runImage.setImageBitmap(run.lightModeImage)
             if (holder.binding.root.context.isNightModeEnabled())
@@ -52,7 +45,7 @@ class RunAdapter : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
         }
     }
 
-    override fun getItemCount() = _runList.size
+    override fun getItemCount() = runList.size
 
     class ViewHolder(val binding: RecyclerviewRunDetailsItemBinding) :
         RecyclerView.ViewHolder(binding.root)

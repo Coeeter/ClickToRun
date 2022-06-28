@@ -15,6 +15,7 @@
     <style name="Theme.ClickToRun.ToolbarOverlay" parent="Theme.ClickToRun">
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlHighlight">#4DFFFFFF</item>
     </style>
 
     <style name="AlertDialogCustom" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
