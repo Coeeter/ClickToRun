@@ -19,9 +19,9 @@ class RunRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteRunFromLocal(run: Run) {
+    suspend fun deleteRunFromLocal(listOfId: List<Int>) {
         withContext(Dispatchers.IO) {
-            runDao.deleteRun(run)
+            runDao.deleteRun(listOfId)
         }
     }
 

@@ -7,6 +7,9 @@ import android.content.res.Configuration
 import android.location.Location
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentActivity
 import com.example.clicktorun.R
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
@@ -80,4 +83,8 @@ fun View.createSnackBar(
 fun Activity.hideKeyboard() {
     val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
+}
+
+fun FragmentActivity.setActionToolbar(toolbar: Toolbar) {
+    (this as AppCompatActivity).setSupportActionBar(toolbar)
 }

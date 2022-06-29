@@ -6,6 +6,7 @@
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3345" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_background.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_button_background.xml" value="0.2135" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_checkbox_background.xml" value="0.2745" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_dark_mode_background.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_fab_background.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/custom_fab_dark_mode_background.xml" value="0.1875" />
@@ -19,6 +20,8 @@
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_app_icon_round_shadow.xml" value="0.1955" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_baseline_access_time_24.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_baseline_cancel_24.xml" value="0.2115" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_baseline_check_circle_24.xml" value="0.2745" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.2745" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_baseline_directions_run_24.xml" value="0.2755" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_baseline_monitor_weight_24.xml" value="0.1875" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/drawable/ic_baseline_speed_24.xml" value="0.2755" />
@@ -67,10 +70,12 @@
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/fragment_splash_screen.xml" value="0.3489583333333333" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/fragment_tracking.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/fragment_user_details.xml" value="0.3489583333333333" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/marker_view.xml" value="0.3489583333333333" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/notification_tracking_run.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/recycler_run_item.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/layout/recyclerview_run_details_item.xml" value="0.33" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/menu/bottom_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/menu/delete_menu.xml" value="0.3489583333333333" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/menu/explore_menu.xml" value="0.3489583333333333" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/menu/running_mode_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/nasru/Desktop/AndStudio/ClickToRun/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1425" />

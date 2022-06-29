@@ -12,8 +12,8 @@ interface RunDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRun(run: Run)
 
-    @Delete
-    fun deleteRun(run: Run)
+    @Query("DELETE FROM runs WHERE id in (:idList)")
+    fun deleteRun(idList: List<Int>)
 
     @Query("DELETE FROM runs WHERE email = :email")
     fun deleteAllRuns(email: String)

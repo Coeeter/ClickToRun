@@ -40,4 +40,10 @@ class TrackingViewModel @Inject constructor(
             runRepository.deleteAllRunsFromLocal(email)
         }
     }
+
+    fun deleteRun(listOfRuns: List<Run>) {
+        viewModelScope.launch {
+            runRepository.deleteRunFromLocal(listOfRuns.map { it.id!! })
+        }
+    }
 }

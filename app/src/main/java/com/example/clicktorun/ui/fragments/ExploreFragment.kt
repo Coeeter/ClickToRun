@@ -3,10 +3,10 @@ package com.example.clicktorun.ui.fragments
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.clicktorun.R
 import com.example.clicktorun.databinding.FragmentExploreBinding
+import com.example.clicktorun.utils.setActionToolbar
 
 class ExploreFragment : Fragment(R.layout.fragment_explore) {
     private lateinit var binding: FragmentExploreBinding
@@ -23,7 +23,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explore) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentExploreBinding.bind(view)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        requireActivity().setActionToolbar(binding.toolbar)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
