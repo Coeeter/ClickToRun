@@ -39,8 +39,8 @@ fun Long.toTimeString(): String {
 fun Int.formatDistance(): String {
     val metres = this % 1000
     val kilometres = this / 1000
-    if (metres == 0) return "${kilometres}km"
     if (kilometres == 0) return "${metres}m"
+    if (metres == 0) return "${kilometres}km"
     return "${kilometres}km ${metres}m"
 }
 

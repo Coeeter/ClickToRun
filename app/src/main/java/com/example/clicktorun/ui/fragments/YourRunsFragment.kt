@@ -1,9 +1,11 @@
 package com.example.clicktorun.ui.fragments
 
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,6 +14,7 @@ import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.FragmentRunsBinding
 import com.example.clicktorun.ui.adapter.RunAdapter
 import com.example.clicktorun.ui.viewmodels.TrackingViewModel
+import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.isNightModeEnabled
 import com.example.clicktorun.utils.setActionToolbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     private lateinit var binding: FragmentRunsBinding
     private val trackingViewModel: TrackingViewModel by viewModels()
-    private val runList = mutableListOf<Run>()
     private lateinit var menuItem: MenuItem
 
     override fun onCreateView(
@@ -49,32 +51,14 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
         binding.btnAddRun.setOnClickListener {
             findNavController().navigate(YourRunsFragmentDirections.runsToTracking())
         }
+        RunAdapter.selectedItems.clear()
+        RunAdapter.selectable = false
         trackingViewModel.user.observe(viewLifecycleOwner) { user ->
             user ?: return@observe
             trackingViewModel.getRunList(user.email).observe(viewLifecycleOwner) {
                 menuItem.isVisible = false
-                runList.clear()
-                runList.addAll(it)
                 binding.noRunsView.visibility = View.GONE
-                binding.recyclerView.adapter = RunAdapter(runList, { adapter ->
-                    menuItem.isVisible = true
-                    binding.toolbar.navigationIcon = AppCompatResources.getDrawable(
-                        requireContext(),
-                        R.drawable.ic_baseline_close_24,
-                    )
-                    binding.toolbar.setNavigationOnClickListener {
-                        binding.toolbar.navigationIcon = null
-                        menuItem.isVisible = false
-                        binding.toolbar.title = "Your Runs"
-                        RunAdapter.selectable = false
-                        RunAdapter.selectedItems.clear()
-                        adapter.notifyDataSetChanged()
-                    }
-                    true
-                }, { size ->
-                    if (!RunAdapter.selectable) return@RunAdapter
-                    binding.toolbar.title = "$size selected"
-                })
+                binding.recyclerView.adapter = getAdapter(it)
                 if (it.isEmpty()) binding.noRunsView.visibility = View.VISIBLE
             }
         }
@@ -96,13 +80,46 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.miDelete) {
             trackingViewModel.deleteRun(RunAdapter.selectedItems)
-            RunAdapter.selectedItems.clear()
-            RunAdapter.selectable = false
-            binding.toolbar.title = "Your Runs"
-            binding.toolbar.navigationIcon = null
-            menuItem.isVisible = false
+            hideActionMenu()
+            binding.root.createSnackBar("Run has been deleted successfully").apply {
+                anchorView = binding.anchor
+                show()
+            }
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun getAdapter(runList: List<Run>) =
+        RunAdapter(runList, object : RunAdapter.AdapterListener {
+            override fun onItemSizeChanged(size: Int) {
+                if (!RunAdapter.selectable) return
+                binding.toolbar.title = "$size selected"
+            }
+
+            override fun onLongPressed(adapter: RunAdapter) = showActionMenu(adapter)
+        })
+
+    private fun showActionMenu(adapter: RunAdapter): Boolean {
+        menuItem.isVisible = true
+        binding.toolbar.navigationIcon = AppCompatResources.getDrawable(
+            requireContext(),
+            R.drawable.ic_baseline_close_24
+        )
+        binding.toolbar.setNavigationOnClickListener {
+            hideActionMenu()
+            adapter.notifyDataSetChanged()
+        }
+        return true
+    }
+
+    private fun hideActionMenu() {
+        RunAdapter.apply {
+            selectable = false
+            selectedItems.clear()
+        }
+        menuItem.isVisible = false
+        binding.toolbar.navigationIcon = null
+        binding.toolbar.title = "Your Runs"
     }
 }
