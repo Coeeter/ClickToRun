@@ -88,3 +88,6 @@ fun Activity.hideKeyboard() {
 fun FragmentActivity.setActionToolbar(toolbar: Toolbar) {
     (this as AppCompatActivity).setSupportActionBar(toolbar)
 }
+
+fun Context.isDeviceInLandscape() =
+    this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE

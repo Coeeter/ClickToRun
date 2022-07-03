@@ -1,20 +1,21 @@
 package com.example.clicktorun.ui.fragments
 
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.FragmentRunsBinding
 import com.example.clicktorun.ui.adapter.RunAdapter
-import com.example.clicktorun.ui.viewmodels.TrackingViewModel
+import com.example.clicktorun.ui.viewmodels.MainViewModel
 import com.example.clicktorun.utils.createSnackBar
+import com.example.clicktorun.utils.isDeviceInLandscape
 import com.example.clicktorun.utils.isNightModeEnabled
 import com.example.clicktorun.utils.setActionToolbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     private lateinit var binding: FragmentRunsBinding
-    private val trackingViewModel: TrackingViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     private lateinit var menuItem: MenuItem
 
     override fun onCreateView(
@@ -53,16 +54,21 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
         }
         RunAdapter.selectedItems.clear()
         RunAdapter.selectable = false
-        trackingViewModel.user.observe(viewLifecycleOwner) { user ->
+        mainViewModel.user.observe(viewLifecycleOwner) { user ->
             user ?: return@observe
-            trackingViewModel.getRunList(user.email).observe(viewLifecycleOwner) {
+            mainViewModel.getRunList(user.email).observe(viewLifecycleOwner) {
                 menuItem.isVisible = false
                 binding.noRunsView.visibility = View.GONE
                 binding.recyclerView.adapter = getAdapter(it)
+                binding.recyclerView.layoutManager =
+                    if (requireContext().isDeviceInLandscape())
+                        GridLayoutManager(requireContext(), 2)
+                    else
+                        LinearLayoutManager(requireContext())
                 if (it.isEmpty()) binding.noRunsView.visibility = View.VISIBLE
             }
         }
-        trackingViewModel.getCurrentUser()
+        mainViewModel.getCurrentUser()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -79,7 +85,7 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.miDelete) {
-            trackingViewModel.deleteRun(RunAdapter.selectedItems)
+            mainViewModel.deleteRun(RunAdapter.selectedItems)
             hideActionMenu()
             binding.root.createSnackBar("Run has been deleted successfully").apply {
                 anchorView = binding.anchor

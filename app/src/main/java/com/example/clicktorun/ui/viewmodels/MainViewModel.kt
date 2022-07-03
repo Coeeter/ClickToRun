@@ -1,5 +1,6 @@
 package com.example.clicktorun.ui.viewmodels
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TrackingViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
     private val runRepository: RunRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {

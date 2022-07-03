@@ -12,7 +12,7 @@ import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.FragmentTrackingBinding
 import com.example.clicktorun.services.RunService
-import com.example.clicktorun.ui.viewmodels.TrackingViewModel
+import com.example.clicktorun.ui.viewmodels.MainViewModel
 import com.example.clicktorun.utils.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -29,7 +29,7 @@ import kotlin.math.round
 class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private lateinit var binding: FragmentTrackingBinding
     private var googleMap: GoogleMap? = null
-    private val trackingViewModel: TrackingViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     private var runPath: MutableList<MutableList<LatLng>> = mutableListOf()
     private var distanceInMetres = 0
     private var timeTakenInMilliseconds = 0L
@@ -73,12 +73,12 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
                 R.drawable.custom_dark_mode_background
             )
         }
-        trackingViewModel.user.observe(viewLifecycleOwner) {
+        mainViewModel.user.observe(viewLifecycleOwner) {
             it ?: return@observe
             weight = it.weightInKilograms
             email = it.email
         }
-        trackingViewModel.getCurrentUser()
+        mainViewModel.getCurrentUser()
     }
 
     private fun setUpMap(savedInstanceState: Bundle?) {
@@ -163,7 +163,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
                                 lightModeImage = if (!isDarkModeEnabled) firstImage else secondImage
                                 darkModeImage = if (!isDarkModeEnabled) secondImage else firstImage
                             }
-                            trackingViewModel.saveRun(run)
+                            mainViewModel.saveRun(run)
                             cancelRun()
                         }
                     }

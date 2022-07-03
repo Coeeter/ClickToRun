@@ -1,5 +1,6 @@
 package com.example.clicktorun.repositories
 
+import android.net.Uri
 import com.example.clicktorun.data.daos.UserDao
 import com.example.clicktorun.data.models.User
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +18,8 @@ class UserRepository @Inject constructor(
         userDao.insertUser(user)
     }
 
-    suspend fun updateUser(map: Map<String, Any>) = withContext(Dispatchers.IO) {
-        userDao.updateUser(map)
+    suspend fun updateUser(map: Map<String, Any>, uri: Uri? = null) = withContext(Dispatchers.IO) {
+        userDao.updateUser(map, uri)
     }
 
     suspend fun deleteUser(email: String) = withContext(Dispatchers.IO) {

@@ -8,7 +8,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/miCancel"
-        android:icon="@drawable/ic_cross"
+        android:icon="@drawable/ic_baseline_close_24"
         android:title="Cancel"
         app:showAsAction="always" />
 </menu>

@@ -1,5 +1,6 @@
 package com.example.clicktorun.ui.viewmodels
 
+import android.net.Uri
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,6 +28,7 @@ class AuthViewModel @Inject constructor(
     var username: String? = null
     var weight: String? = null
     var height: String? = null
+    var uri: Uri? = null
 
     fun logIn() {
         val emailCheck = !validateEmailFields(email)
@@ -79,6 +81,29 @@ class AuthViewModel @Inject constructor(
         _authState.value = (AuthState.Loading)
         viewModelScope.launch {
             if (userRepository.insertUser(user))
+                return@launch _authState.postValue(AuthState.Success)
+            _authState.postValue(AuthState.FireBaseFailure())
+        }
+    }
+
+    fun updateUser() {
+        val checkUsername = !validateUsername(username)
+        val checkWeight = !validateWeight(weight)
+        val checkHeight = !validateHeight(height)
+        if (checkUsername || checkWeight || checkHeight) return
+        val hashMap = HashMap<String, Any>()
+        _authState.value = (AuthState.Loading)
+        viewModelScope.launch {
+            val currentUser = userRepository.getCurrentUser()
+            if (username != currentUser!!.username)
+                hashMap["username"] = username!!
+            if (height != (currentUser.heightInMetres * 100).toString())
+                hashMap["heightInCentimetres"] = height!!.toDouble()
+            if (weight != currentUser.weightInKilograms.toString())
+                hashMap["weightInKilograms"] = weight!!.toDouble()
+            if (hashMap.isEmpty() && uri == null)
+                return@launch _authState.postValue(AuthState.FireBaseFailure("No data has been changed!"))
+            if (userRepository.updateUser(hashMap, uri))
                 return@launch _authState.postValue(AuthState.Success)
             _authState.postValue(AuthState.FireBaseFailure())
         }

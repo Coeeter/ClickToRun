@@ -121,8 +121,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
     private fun createSnackbar() {
         binding.root.createSnackBar(
-            message = "Successfully created account!",
-            okayAction = true
+            "Successfully created account!",
         ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onShown(transientBottomBar: Snackbar?) {
                 super.onShown(transientBottomBar)
@@ -134,7 +133,6 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
-                findNavController().popBackStack()
             }
         }).show()
     }

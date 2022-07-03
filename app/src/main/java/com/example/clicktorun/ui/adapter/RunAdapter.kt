@@ -21,11 +21,6 @@ class RunAdapter(
         val selectedItems = mutableListOf<Run>()
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
-        super.onAttachedToRecyclerView(recyclerView)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         RecyclerviewRunDetailsItemBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -38,6 +33,8 @@ class RunAdapter(
         val run = runList[position]
         holder.binding.apply {
             selected.visibility = View.GONE
+            if (selectedItems.map { it.id }.contains(run.id))
+                selected.visibility = View.VISIBLE
             runImage.setImageBitmap(run.lightModeImage)
             if (holder.binding.root.context.isNightModeEnabled())
                 runImage.setImageBitmap(run.darkModeImage)
