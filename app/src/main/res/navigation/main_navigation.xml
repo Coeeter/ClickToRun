@@ -38,14 +38,15 @@
         tools:layout="@layout/fragment_explore" />
     <fragment
         android:id="@+id/miSettings"
-        android:name="com.example.clicktorun.ui.fragments.SettingsFragment"
+        android:name="com.example.clicktorun.ui.fragments.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_miSettings_to_editAccountFragment"
             app:destination="@id/editAccountFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/exit_animation"
+            app:launchSingleTop="false"
             app:popEnterAnim="@anim/enter_animation"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
@@ -64,7 +65,15 @@
     </fragment>
     <fragment
         android:id="@+id/editAccountFragment"
-        android:name="com.example.clicktorun.ui.fragments.EditAccountFragment"
+        android:name="com.example.clicktorun.ui.fragments.settings.EditAccountFragment"
         android:label="fragment_edit_account"
-        tools:layout="@layout/fragment_edit_account" />
+        tools:layout="@layout/fragment_edit_account">
+        <action
+            android:id="@+id/action_editAccountFragment_to_photoBottomSheet"
+            app:destination="@id/photoBottomSheet" />
+    </fragment>
+    <dialog
+        android:id="@+id/photoBottomSheet"
+        android:name="com.example.clicktorun.ui.fragments.settings.PhotoBottomSheet"
+        android:label="PhotoBottomSheet" />
 </navigation>

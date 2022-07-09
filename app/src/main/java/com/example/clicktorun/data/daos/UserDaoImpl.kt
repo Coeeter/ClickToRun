@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import com.example.clicktorun.data.models.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
@@ -95,11 +96,40 @@ class UserDaoImpl(
         try {
             firebaseFirestore.collection("users")
                 .document(email)
-                .delete()
-                .await()
+                .apply {
+                    get().await().getString("profileImage")?.let { imageLink ->
+                        firebaseStorage.reference
+                            .child(imageLink)
+                            .delete()
+                            .await()
+                    }
+                    delete().await()
+                }
             firebaseAuth.currentUser!!.delete().await()
             return true
         } catch (e: Exception) {
+            Log.d("poly", e.message.toString())
+            e.printStackTrace()
+        }
+        return false
+    }
+
+    override suspend fun deleteProfileImage(email: String): Boolean {
+        try {
+            firebaseFirestore.collection("users")
+                .document(email)
+                .apply {
+                    get().await().getString("profileImage")?.let {
+                        firebaseStorage.reference
+                            .child(it)
+                            .delete()
+                            .await()
+                        val map = hashMapOf<String, Any>("profileImage" to FieldValue.delete())
+                        update(map).await()
+                    }
+                }
+            return true
+        } catch (e: java.lang.Exception) {
             Log.d("poly", e.message.toString())
             e.printStackTrace()
         }

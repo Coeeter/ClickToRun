@@ -1,9 +1,11 @@
-package com.example.clicktorun.ui.fragments
+package com.example.clicktorun.ui.fragments.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.clicktorun.R
@@ -25,7 +27,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class EditAccountFragment : Fragment(R.layout.fragment_edit_account) {
     private lateinit var binding: FragmentEditAccountBinding
-    private val authViewModel: AuthViewModel by viewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private val mainViewModel: MainViewModel by viewModels()
     private var snackbar: Snackbar? = null
 
@@ -68,12 +70,19 @@ class EditAccountFragment : Fragment(R.layout.fragment_edit_account) {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> {
                     binding.mainProgress.visibility = View.VISIBLE
+                    authViewModel.uri.let { uri ->
+                        if (uri == null) return@let binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
+                        binding.profileImage.setImageURI(uri)
+                    }
                 }
                 is AuthViewModel.AuthState.Success -> {
+                    if (!binding.mainProgress.isVisible) return@observe
                     binding.mainProgress.visibility = View.GONE
                     createSnackbar("Account Updated Successfully", true)
+                    binding.btnSubmit.isEnabled = false
                 }
                 is AuthViewModel.AuthState.FireBaseFailure -> {
+                    if (!binding.mainProgress.isVisible) return@observe
                     binding.mainProgress.visibility = View.GONE
                     createSnackbar(it.message ?: "Unknown error has occurred", false)
                 }
@@ -120,6 +129,12 @@ class EditAccountFragment : Fragment(R.layout.fragment_edit_account) {
             binding.weightInput.isErrorEnabled = false
         }
         binding.btnSubmit.setOnClickListener { authViewModel.updateUser() }
+        binding.profileImage.setOnClickListener {
+            if (binding.imageProgress.isVisible) return@setOnClickListener
+            findNavController().navigate(
+                EditAccountFragmentDirections.actionEditAccountFragmentToPhotoBottomSheet()
+            )
+        }
     }
 
     private fun createSnackbar(message: String, callback: Boolean) {

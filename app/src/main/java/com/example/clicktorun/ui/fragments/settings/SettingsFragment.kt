@@ -1,6 +1,5 @@
-package com.example.clicktorun.ui.fragments
+package com.example.clicktorun.ui.fragments.settings
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -16,9 +15,7 @@ import com.example.clicktorun.ui.activities.AuthActivity
 import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.ui.viewmodels.MainViewModel
 import com.example.clicktorun.utils.ACTION_NAVIGATE_TO_LOGIN
-import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.startActivityWithAnimation
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,8 +35,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun setUpObservers() {
-        binding.imageProgress.visibility = View.VISIBLE
         mainViewModel.user.observe(viewLifecycleOwner) {
+            binding.imageProgress.visibility = View.VISIBLE
             user = it
             it ?: return@observe
             binding.username.text = user!!.username

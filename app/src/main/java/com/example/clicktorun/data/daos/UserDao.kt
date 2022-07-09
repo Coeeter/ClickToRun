@@ -8,4 +8,5 @@ interface UserDao {
     suspend fun insertUser(user: User): Boolean
     suspend fun updateUser(map: Map<String, Any>, uri: Uri? = null): Boolean
     suspend fun deleteUser(email: String): Boolean
+    suspend fun deleteProfileImage(email: String): Boolean
 }

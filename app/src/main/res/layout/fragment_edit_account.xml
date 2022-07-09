@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
     android:fillViewport="true"
-    tools:context=".ui.fragments.EditAccountFragment">
+    tools:context=".ui.fragments.settings.EditAccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

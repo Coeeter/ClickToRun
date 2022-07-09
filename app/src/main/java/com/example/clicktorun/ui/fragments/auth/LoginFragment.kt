@@ -67,7 +67,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     progress.visibility = View.VISIBLE
                 }
                 is AuthViewModel.AuthState.Success -> binding.apply {
-                    progress.visibility = View.GONE
                     checkUserStatus()
                 }
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
@@ -101,6 +100,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private fun checkUserStatus() {
         CoroutineScope(Dispatchers.Main).launch {
             val state = authViewModel.getCurrentUserState()
+            binding.progress.visibility = View.GONE
             if (state["firestoreUser"] == null)
                 return@launch findNavController().navigate(LoginFragmentDirections.loginToUserDetails())
             Intent(requireContext(), MainActivity::class.java).run {

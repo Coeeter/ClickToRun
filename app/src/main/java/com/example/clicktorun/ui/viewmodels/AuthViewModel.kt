@@ -10,6 +10,7 @@ import com.example.clicktorun.data.models.User
 import com.example.clicktorun.repositories.AuthRepository
 import com.example.clicktorun.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -86,28 +87,45 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun updateUser() {
+    fun updateUser(validate: Boolean = false) {
         val checkUsername = !validateUsername(username)
         val checkWeight = !validateWeight(weight)
         val checkHeight = !validateHeight(height)
-        if (checkUsername || checkWeight || checkHeight) return
+        if ((checkUsername || checkWeight || checkHeight) && !validate) return
         val hashMap = HashMap<String, Any>()
-        _authState.value = (AuthState.Loading)
+        _authState.value = AuthState.Loading
         viewModelScope.launch {
             val currentUser = userRepository.getCurrentUser()
-            if (username != currentUser!!.username)
+            if (!validate && username != currentUser!!.username)
                 hashMap["username"] = username!!
-            if (height!!.toDouble() != currentUser.heightInMetres * 100)
+            if (!validate && height!!.toDouble() != currentUser!!.heightInMetres * 100)
                 hashMap["heightInCentimetres"] = height!!.toDouble()
-            if (weight!!.toDouble() != currentUser.weightInKilograms)
+            if (!validate && weight!!.toDouble() != currentUser!!.weightInKilograms)
                 hashMap["weightInKilograms"] = weight!!.toDouble()
             if (hashMap.isEmpty() && uri == null)
                 return@launch _authState.postValue(AuthState.FireBaseFailure("No data has been changed!"))
             if (userRepository.updateUser(hashMap, uri)) {
                 uri = null
-                return@launch _authState.postValue(AuthState.Success)
+                return@launch _authState.setValue(AuthState.Success).run {
+                    _authState.value = AuthState.Idle
+                }
             }
-            _authState.postValue(AuthState.FireBaseFailure())
+            _authState.setValue(AuthState.FireBaseFailure()).run {
+                _authState.value = AuthState.Idle
+            }
+        }
+    }
+
+    fun deleteImage() {
+        _authState.value = AuthState.Loading
+        viewModelScope.launch {
+            if (userRepository.deleteImage(authRepository.getAuthUser()!!.email!!))
+                return@launch _authState.setValue(AuthState.Success).run {
+                    _authState.value = AuthState.Idle
+                }
+            _authState.setValue(AuthState.FireBaseFailure()).run {
+                _authState.value = AuthState.Idle
+            }
         }
     }
 

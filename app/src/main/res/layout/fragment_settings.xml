@@ -7,7 +7,7 @@
     android:background="?attr/colorSurface"
     android:fillViewport="true"
     android:theme="@style/Theme.ClickToRun.CustomBackground"
-    tools:context=".ui.fragments.SettingsFragment">
+    tools:context=".ui.fragments.settings.SettingsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

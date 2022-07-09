@@ -25,4 +25,8 @@ class UserRepository @Inject constructor(
     suspend fun deleteUser(email: String) = withContext(Dispatchers.IO) {
         userDao.deleteUser(email)
     }
+
+    suspend fun deleteImage(email: String) = withContext(Dispatchers.IO) {
+        userDao.deleteProfileImage(email)
+    }
 }

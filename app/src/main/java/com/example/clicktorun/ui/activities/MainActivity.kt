@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.fragmentContainerView)
         binding.navBar.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.trackingFragment || destination.id == R.id.editAccountFragment)
+            if (destination.id == R.id.trackingFragment || destination.id == R.id.editAccountFragment || destination.id == R.id.photoBottomSheet)
                 return@addOnDestinationChangedListener binding.navBar.setVisibility(View.GONE)
             binding.navBar.visibility = View.VISIBLE
         }
