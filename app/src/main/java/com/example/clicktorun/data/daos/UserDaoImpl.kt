@@ -20,9 +20,9 @@ class UserDaoImpl(
                 .document(firebaseAuth.currentUser!!.email!!)
                 .get()
                 .await()
-            if (!documentSnapshot.exists() &&
-                !documentSnapshot.contains("username") &&
-                !documentSnapshot.contains("heightInCentimetres") &&
+            if (!documentSnapshot.exists() ||
+                !documentSnapshot.contains("username") ||
+                !documentSnapshot.contains("heightInCentimetres") ||
                 !documentSnapshot.contains("weightInKilograms")
             ) return null
             if (documentSnapshot.contains("profileImage")) {
@@ -67,7 +67,17 @@ class UserDaoImpl(
                     .child(path)
                     .putFile(it)
                     .await()
-                (map as HashMap).put("profileImage", path)
+                (map as HashMap)["profileImage"] = path
+                firebaseFirestore.collection("users")
+                    .document(firebaseAuth.currentUser!!.email!!)
+                    .get()
+                    .await()
+                    .getString("profileImage")?.let { imageLink ->
+                        firebaseStorage.reference
+                            .child(imageLink)
+                            .delete()
+                            .await()
+                    }
             }
             firebaseFirestore.collection("users")
                 .document(firebaseAuth.currentUser!!.email!!)
@@ -84,9 +94,10 @@ class UserDaoImpl(
     override suspend fun deleteUser(email: String): Boolean {
         try {
             firebaseFirestore.collection("users")
-                .document(firebaseAuth.currentUser!!.email!!)
+                .document(email)
                 .delete()
                 .await()
+            firebaseAuth.currentUser!!.delete().await()
             return true
         } catch (e: Exception) {
             Log.d("poly", e.message.toString())

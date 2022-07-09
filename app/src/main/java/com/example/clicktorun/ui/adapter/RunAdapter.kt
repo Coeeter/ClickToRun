@@ -3,7 +3,6 @@ package com.example.clicktorun.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.RecyclerviewRunDetailsItemBinding

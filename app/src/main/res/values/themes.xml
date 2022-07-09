@@ -21,4 +21,9 @@
     <style name="AlertDialogCustom" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="colorOnSurface">@color/black</item>
     </style>
+
+    <style name="Theme.ClickToRun.CustomBackground" parent="Theme.ClickToRun">
+        <item name="colorSurface">#EDECEC</item>
+        <item name="colorOnSecondary">@color/white</item>
+    </style>
 </resources>

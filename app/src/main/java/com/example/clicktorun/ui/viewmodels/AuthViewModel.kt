@@ -97,14 +97,16 @@ class AuthViewModel @Inject constructor(
             val currentUser = userRepository.getCurrentUser()
             if (username != currentUser!!.username)
                 hashMap["username"] = username!!
-            if (height != (currentUser.heightInMetres * 100).toString())
+            if (height!!.toDouble() != currentUser.heightInMetres * 100)
                 hashMap["heightInCentimetres"] = height!!.toDouble()
-            if (weight != currentUser.weightInKilograms.toString())
+            if (weight!!.toDouble() != currentUser.weightInKilograms)
                 hashMap["weightInKilograms"] = weight!!.toDouble()
             if (hashMap.isEmpty() && uri == null)
                 return@launch _authState.postValue(AuthState.FireBaseFailure("No data has been changed!"))
-            if (userRepository.updateUser(hashMap, uri))
+            if (userRepository.updateUser(hashMap, uri)) {
+                uri = null
                 return@launch _authState.postValue(AuthState.Success)
+            }
             _authState.postValue(AuthState.FireBaseFailure())
         }
     }

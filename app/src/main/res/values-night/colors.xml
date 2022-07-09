@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#00caff</color>
+    <color name="primary_variant">#039EC6</color>
+    <color name="rippleColor">#0D00CAFF</color>
+    <color name="secondary">#77ffbb</color>
+    <color name="textColor">#7F9597</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="overlay">#66AFAFAF</color>
+</resources>

@@ -38,6 +38,7 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRunsBinding.bind(view)
+        binding.progress.visibility = View.VISIBLE
         requireActivity().setActionToolbar(binding.toolbar)
         binding.btnAddRun.background = AppCompatResources.getDrawable(
             requireContext(),
@@ -66,6 +67,7 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
                     else
                         LinearLayoutManager(requireContext())
                 if (it.isEmpty()) binding.noRunsView.visibility = View.VISIBLE
+                binding.progress.visibility = View.GONE
             }
         }
         mainViewModel.getCurrentUser()

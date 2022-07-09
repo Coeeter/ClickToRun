@@ -34,7 +34,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private var distanceInMetres = 0
     private var timeTakenInMilliseconds = 0L
     private var isDarkModeEnabled = false
-    private var weight = 60.0
+    private var weight = 0.0
     private var email = ""
 
     override fun onCreateView(
@@ -176,7 +176,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private fun changeMapLayoutParams() {
         val layoutParams = binding.map.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
-        layoutParams.dimensionRatio = "h,1:1"
+        layoutParams.dimensionRatio = "h,2:1"
         binding.map.layoutParams = layoutParams
     }
 

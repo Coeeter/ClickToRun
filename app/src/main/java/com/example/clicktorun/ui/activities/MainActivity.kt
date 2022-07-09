@@ -5,8 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
@@ -57,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.fragmentContainerView)
         binding.navBar.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.trackingFragment)
+            if (destination.id == R.id.trackingFragment || destination.id == R.id.editAccountFragment)
                 return@addOnDestinationChangedListener binding.navBar.setVisibility(View.GONE)
             binding.navBar.visibility = View.VISIBLE
         }
