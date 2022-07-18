@@ -7,11 +7,13 @@ import android.content.res.Configuration
 import android.location.Location
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import com.example.clicktorun.R
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.R.*
 import com.google.android.material.snackbar.Snackbar
 import kotlin.math.roundToInt
 
@@ -77,6 +79,9 @@ fun View.createSnackBar(
     if (okayAction) snackBar.apply {
         setAction("Okay") { dismiss() }
     }
+    snackBar.view.findViewById<TextView>(
+        com.google.android.material.R.id.snackbar_text
+    ).maxLines = 5
     return snackBar
 }
 

@@ -49,6 +49,14 @@
             app:launchSingleTop="false"
             app:popEnterAnim="@anim/enter_animation"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_miSettings_to_deleteAccountFragment"
+            app:destination="@id/deleteAccountFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/trackingFragment"
@@ -76,4 +84,9 @@
         android:id="@+id/photoBottomSheet"
         android:name="com.example.clicktorun.ui.fragments.settings.PhotoBottomSheet"
         android:label="PhotoBottomSheet" />
+    <fragment
+        android:id="@+id/deleteAccountFragment"
+        android:name="com.example.clicktorun.ui.fragments.settings.DeleteAccountFragment"
+        android:label="fragment_delete_account"
+        tools:layout="@layout/fragment_delete_account" />
 </navigation>

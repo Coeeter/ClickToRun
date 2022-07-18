@@ -127,6 +127,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
                 super.onShown(transientBottomBar)
                 CoroutineScope(Dispatchers.Main).launch {
                     delay(3000L)
+                    if (authViewModel.authState.value is AuthViewModel.AuthState.Success) return@launch
                     findNavController().popBackStack()
                 }
             }

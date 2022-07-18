@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.clicktorun.R
 import com.example.clicktorun.databinding.FragmentPhotoBottomSheetBinding
 import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.utils.REQUEST_CODE_TO_PICK_IMAGE
@@ -19,6 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class PhotoBottomSheet : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentPhotoBottomSheetBinding
     private val authViewModel: AuthViewModel by activityViewModels()
+
+    override fun getTheme() = R.style.CustomBottomSheetDialogTheme
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +37,9 @@ class PhotoBottomSheet : BottomSheetDialogFragment() {
         }
         binding.deleteImageBtn.setOnClickListener {
             authViewModel.deleteImage()
+            findNavController().popBackStack()
+        }
+        binding.cancelBtn.setOnClickListener {
             findNavController().popBackStack()
         }
         return binding.root

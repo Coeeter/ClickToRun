@@ -1,6 +1,7 @@
 package com.example.clicktorun.ui.viewmodels
 
 import android.net.Uri
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,16 +9,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clicktorun.data.models.User
 import com.example.clicktorun.repositories.AuthRepository
+import com.example.clicktorun.repositories.RunRepository
 import com.example.clicktorun.repositories.UserRepository
+import com.google.firebase.FirebaseError
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val runRepository: RunRepository
 ) : ViewModel() {
     private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
     val authState: LiveData<AuthState>
@@ -125,6 +129,26 @@ class AuthViewModel @Inject constructor(
                 }
             _authState.setValue(AuthState.FireBaseFailure()).run {
                 _authState.value = AuthState.Idle
+            }
+        }
+    }
+
+    fun deleteUserAccount() {
+        if (!validatePasswordFields(password, null)) return
+        viewModelScope.launch {
+            try {
+                _authState.value = AuthState.Loading
+                authRepository.login(authRepository.getAuthUser()!!.email!!, password!!).await()
+                runRepository.deleteAllRunsFromLocal(authRepository.getAuthUser()!!.email!!)
+                if (!userRepository.deleteUser(authRepository.getAuthUser()!!.email!!))
+                    return@launch _authState.setValue(AuthState.FireBaseFailure())
+                authRepository.getAuthUser()?.delete()?.await()
+                _authState.value = AuthState.Success
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _authState.value = AuthState.FireBaseFailure(
+                    e.message
+                )
             }
         }
     }

@@ -74,6 +74,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 SettingsFragmentDirections.actionMiSettingsToEditAccountFragment()
             )
         }
+        binding.deleteAccountBtn.setOnClickListener {
+            findNavController().navigate(
+                SettingsFragmentDirections.actionMiSettingsToDeleteAccountFragment()
+            )
+        }
         binding.details.setOnClickListener {
 
         }
