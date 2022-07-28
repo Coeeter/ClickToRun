@@ -55,11 +55,15 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.fragmentContainerView)
         binding.navBar.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.trackingFragment ||
-                destination.id == R.id.editAccountFragment ||
-                destination.id == R.id.photoBottomSheet ||
-                destination.id == R.id.deleteAccountFragment
-            ) return@addOnDestinationChangedListener binding.navBar.setVisibility(View.GONE)
+            val hideNavigationFragments = listOf(
+                R.id.trackingFragment,
+                R.id.editAccountFragment,
+                R.id.photoBottomSheet,
+                R.id.deleteAccountFragment,
+                R.id.runDetailsFragment,
+            )
+            if (destination.id in hideNavigationFragments)
+                return@addOnDestinationChangedListener binding.navBar.setVisibility(View.GONE)
             binding.navBar.visibility = View.VISIBLE
         }
     }

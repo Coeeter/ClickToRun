@@ -1,6 +1,8 @@
 package com.example.clicktorun.repositories
 
+import com.example.clicktorun.data.daos.PositionDao
 import com.example.clicktorun.data.daos.RunDao
+import com.example.clicktorun.data.models.Position
 import com.example.clicktorun.data.models.Run
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -9,9 +11,25 @@ import javax.inject.Singleton
 
 @Singleton
 class RunRepository @Inject constructor(
-    private val runDao: RunDao
+    private val runDao: RunDao,
+    private val positionDao: PositionDao,
 ) {
     fun getRunList(email: String) = runDao.getAllRuns(email)
+
+    fun getPositionList(run: Run) = positionDao.getPositionList(run.id)
+
+    suspend fun insertPosition(positionList: List<Position>) {
+        withContext(Dispatchers.IO) {
+            for (position in positionList)
+                positionDao.insertPosition(position)
+        }
+    }
+
+    suspend fun deletePositions(run: Run) {
+        withContext(Dispatchers.IO) {
+            positionDao.deletePositionList(run.id)
+        }
+    }
 
     suspend fun insertRunToLocal(run: Run) {
         withContext(Dispatchers.IO) {
@@ -19,7 +37,7 @@ class RunRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteRunFromLocal(listOfId: List<Int>) {
+    suspend fun deleteRunFromLocal(listOfId: List<String>) {
         withContext(Dispatchers.IO) {
             runDao.deleteRun(listOfId)
         }

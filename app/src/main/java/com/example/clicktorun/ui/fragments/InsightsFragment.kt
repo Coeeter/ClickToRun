@@ -34,6 +34,7 @@ class InsightsFragment : Fragment(R.layout.fragment_insights) {
                             valueTextColor = getColor(R.color.primary)
                             color = getColor(R.color.secondary)
                             valueTextSize = 30f
+
                         }
                     )
                     invalidate()

@@ -2,6 +2,7 @@ package com.example.clicktorun.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.clicktorun.R
+import com.example.clicktorun.data.models.Position
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.FragmentTrackingBinding
 import com.example.clicktorun.services.RunService
@@ -30,7 +32,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private lateinit var binding: FragmentTrackingBinding
     private var googleMap: GoogleMap? = null
     private val mainViewModel: MainViewModel by viewModels()
-    private var runPath: MutableList<MutableList<LatLng>> = mutableListOf()
+    private var runPath: MutableList<MutableList<Position>> = mutableListOf()
     private var distanceInMetres = 0
     private var timeTakenInMilliseconds = 0L
     private var isDarkModeEnabled = false
@@ -95,7 +97,16 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
     private fun setUpServiceListeners() {
         RunService.runPath.observe(viewLifecycleOwner) {
-            runPath = it
+            runPath = it.map { list ->
+                list.map { latLng ->
+                    Position(
+                        latitude = latLng.latitude,
+                        longitude = latLng.longitude,
+                        timeReachedPosition = System.currentTimeMillis(),
+                        caloriesBurnt = getCaloriesBurnt(),
+                    )
+                }.toMutableList()
+            }.toMutableList()
             if (RunService.isTracking.value == false) return@observe
             if (it.size == 0 || it.last().size == 0) return@observe
             googleMap?.setOnMapLoadedCallback {
@@ -138,7 +149,11 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             delay(2000L)
             googleMap?.moveCamera(
                 CameraUpdateFactory.newLatLngBounds(
-                    getLatLngBounds(runPath).build(),
+                    getLatLngBounds(
+                        runPath.map { list ->
+                            list.map { it.getLatLng() }.toMutableList()
+                        }.toMutableList(),
+                    ).build(),
                     binding.map.width,
                     binding.map.height,
                     (binding.map.width * 0.05f).toInt()
@@ -148,12 +163,13 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
                 val averageSpeed =
                     round(distanceInMetres / (timeTakenInMilliseconds / 1000.0) * 360) / 100
                 val run = Run(
-                    email,
-                    distanceInMetres,
-                    System.currentTimeMillis(),
-                    timeTakenInMilliseconds,
-                    averageSpeed,
-                    getCaloriesBurnt()
+                    id = "",
+                    email = email,
+                    distanceRanInMetres = distanceInMetres,
+                    timeEnded = System.currentTimeMillis(),
+                    timeTakenInMilliseconds = timeTakenInMilliseconds,
+                    averageSpeedInKilometersPerHour = averageSpeed,
+                    caloriesBurnt = getCaloriesBurnt(),
                 )
                 googleMap?.snapshot { firstImage ->
                     configureMapType(googleMap!!, !isDarkModeEnabled)
@@ -163,7 +179,14 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
                                 lightModeImage = if (!isDarkModeEnabled) firstImage else secondImage
                                 darkModeImage = if (!isDarkModeEnabled) secondImage else firstImage
                             }
-                            mainViewModel.saveRun(run)
+                            val runId = mainViewModel.saveRun(run)
+                            mainViewModel.insertPositionList(
+                                runPath.map { list ->
+                                    list.map { position ->
+                                        position.apply { this.runId = runId }
+                                    }
+                                }
+                            )
                             cancelRun()
                         }
                     }

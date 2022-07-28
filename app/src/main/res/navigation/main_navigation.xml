@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/miYourRuns"
-        android:name="com.example.clicktorun.ui.fragments.YourRunsFragment"
+        android:name="com.example.clicktorun.ui.fragments.details.YourRunsFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_runs">
         <action
@@ -25,6 +25,13 @@
             app:launchSingleTop="true"
             app:popUpTo="@+id/miYourRuns"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_miYourRuns_to_runDetailsFragment"
+            app:destination="@id/runDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/miInsights"
@@ -89,4 +96,13 @@
         android:name="com.example.clicktorun.ui.fragments.settings.DeleteAccountFragment"
         android:label="fragment_delete_account"
         tools:layout="@layout/fragment_delete_account" />
+    <fragment
+        android:id="@+id/runDetailsFragment"
+        android:name="com.example.clicktorun.ui.fragments.details.RunDetailsFragment"
+        android:label="fragment_run_details"
+        tools:layout="@layout/fragment_run_details" >
+        <argument
+            android:name="index"
+            app:argType="integer" />
+    </fragment>
 </navigation>

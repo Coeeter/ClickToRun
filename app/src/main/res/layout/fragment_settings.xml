@@ -90,7 +90,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/imageContainer"
                     app:layout_constraintTop_toTopOf="@id/imageContainer"
-                    tools:text="Coeeter" />
+                    android:text="Loading..." />
 
                 <TextView
                     android:id="@+id/viewProfile"

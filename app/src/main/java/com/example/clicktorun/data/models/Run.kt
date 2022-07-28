@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "runs")
 data class Run(
+    @PrimaryKey var id: String,
     var email: String? = null,
     var distanceRanInMetres: Int = 0,
     var timeEnded: Long = 0,
@@ -14,7 +15,4 @@ data class Run(
     var caloriesBurnt: Double? = null,
     var lightModeImage: Bitmap? = null,
     var darkModeImage: Bitmap? = null
-) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
-}
+)

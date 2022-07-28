@@ -2,6 +2,7 @@ package com.example.clicktorun.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.clicktorun.data.daos.PositionDao
 import com.example.clicktorun.data.daos.RunDao
 import com.example.clicktorun.data.databases.RunDatabase
 import dagger.Module
@@ -30,5 +31,11 @@ object RoomModule {
     fun providesRunDao(
         db: RunDatabase
     ): RunDao = db.getRunDao()
+
+    @Singleton
+    @Provides
+    fun providesPositionDao(
+        db: RunDatabase
+    ): PositionDao = db.getPositionDao()
 
 }

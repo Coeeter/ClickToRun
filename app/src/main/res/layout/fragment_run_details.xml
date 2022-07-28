@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    tools:context=".ui.fragments.details.RunDetailsFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_gradient_background"
+        android:theme="@style/Theme.ClickToRun.ToolbarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:title="Details of run" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.example.clicktorun.ui.views.CustomMap
+                android:id="@+id/map"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?attr/colorSurface"
+                app:layout_constraintDimensionRatio="h,1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/runDataHeader"
+                style="@style/TextAppearance.MaterialComponents.Headline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Run data"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/map" />
+
+            <View
+                android:id="@+id/runDataHeaderLine"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/custom_gradient_background"
+                app:layout_constraintTop_toBottomOf="@id/runDataHeader" />
+
+            <TextView
+                android:id="@+id/distanceRanLabel"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Distance ran"
+                app:layout_constraintStart_toStartOf="@id/runDataHeader"
+                app:layout_constraintTop_toBottomOf="@id/runDataHeaderLine" />
+
+            <TextView
+                android:id="@+id/distanceRan"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@id/distanceRanLabel"
+                app:layout_constraintEnd_toEndOf="@id/runDataHeaderLine"
+                app:layout_constraintTop_toTopOf="@id/distanceRanLabel"
+                tools:text="211m" />
+
+            <TextView
+                android:id="@+id/timeTakenLabel"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Time taken"
+                app:layout_constraintStart_toStartOf="@id/runDataHeader"
+                app:layout_constraintTop_toBottomOf="@id/distanceRanLabel" />
+
+            <TextView
+                android:id="@+id/timeTaken"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@id/timeTakenLabel"
+                app:layout_constraintEnd_toEndOf="@id/runDataHeaderLine"
+                app:layout_constraintTop_toTopOf="@id/timeTakenLabel"
+                tools:text="00:00:37" />
+
+            <TextView
+                android:id="@+id/averageSpeedLabel"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Average speed"
+                app:layout_constraintStart_toStartOf="@id/runDataHeader"
+                app:layout_constraintTop_toBottomOf="@id/timeTakenLabel" />
+
+            <TextView
+                android:id="@+id/averageSpeed"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@id/averageSpeedLabel"
+                app:layout_constraintEnd_toEndOf="@id/runDataHeaderLine"
+                app:layout_constraintTop_toTopOf="@id/averageSpeedLabel"
+                tools:text="20.66km/h" />
+
+            <TextView
+                android:id="@+id/caloriesBurntLabel"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Calories burnt"
+                app:layout_constraintStart_toStartOf="@id/runDataHeader"
+                app:layout_constraintTop_toBottomOf="@id/averageSpeedLabel" />
+
+            <TextView
+                android:id="@+id/caloriesBurnt"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@id/caloriesBurntLabel"
+                app:layout_constraintEnd_toEndOf="@id/runDataHeaderLine"
+                app:layout_constraintTop_toTopOf="@id/caloriesBurntLabel"
+                tools:text="50kcal" />
+
+            <TextView
+                android:id="@+id/graphHeader"
+                style="@style/TextAppearance.MaterialComponents.Headline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Run data"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/caloriesBurntLabel" />
+
+            <View
+                android:id="@+id/graphHeaderLine"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/custom_gradient_background"
+                app:layout_constraintTop_toBottomOf="@id/graphHeader" />
+
+            <RelativeLayout
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/colorSurface"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

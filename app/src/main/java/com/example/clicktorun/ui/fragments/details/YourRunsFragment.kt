@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui.fragments
+package com.example.clicktorun.ui.fragments.details
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -24,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     private lateinit var binding: FragmentRunsBinding
     private val mainViewModel: MainViewModel by viewModels()
-    private lateinit var menuItem: MenuItem
+    private var menuItem: MenuItem? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,12 +53,10 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
         binding.btnAddRun.setOnClickListener {
             findNavController().navigate(YourRunsFragmentDirections.runsToTracking())
         }
-        RunAdapter.selectedItems.clear()
-        RunAdapter.selectable = false
         mainViewModel.user.observe(viewLifecycleOwner) { user ->
             user ?: return@observe
             mainViewModel.getRunList(user.email).observe(viewLifecycleOwner) {
-                menuItem.isVisible = false
+                if (RunAdapter.selectable) return@observe
                 binding.noRunsView.visibility = View.GONE
                 binding.recyclerView.adapter = getAdapter(it)
                 binding.recyclerView.layoutManager =
@@ -81,13 +79,14 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_menu, menu)
         menuItem = menu.findItem(R.id.miDelete)
-        menuItem.isVisible = false
+        if (!RunAdapter.selectable) menuItem?.isVisible = false
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.miDelete) {
             mainViewModel.deleteRun(RunAdapter.selectedItems)
+            mainViewModel.deletePositionList(RunAdapter.selectedItems)
             hideActionMenu()
             binding.root.createSnackBar("Run has been deleted successfully").apply {
                 anchorView = binding.anchor
@@ -99,7 +98,7 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     }
 
     private fun getAdapter(runList: List<Run>) =
-        RunAdapter(runList, object : RunAdapter.AdapterListener {
+        RunAdapter(runList, findNavController(), object : RunAdapter.AdapterListener {
             override fun onItemSizeChanged(size: Int) {
                 if (!RunAdapter.selectable) return
                 binding.toolbar.title = "$size selected"
@@ -109,7 +108,7 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
         })
 
     private fun showActionMenu(adapter: RunAdapter): Boolean {
-        menuItem.isVisible = true
+        menuItem?.isVisible = true
         binding.toolbar.navigationIcon = AppCompatResources.getDrawable(
             requireContext(),
             R.drawable.ic_baseline_close_24
@@ -126,7 +125,7 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
             selectable = false
             selectedItems.clear()
         }
-        menuItem.isVisible = false
+        menuItem?.isVisible = false
         binding.toolbar.navigationIcon = null
         binding.toolbar.title = "Your Runs"
     }

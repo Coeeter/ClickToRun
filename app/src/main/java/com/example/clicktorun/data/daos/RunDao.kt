@@ -13,7 +13,7 @@ interface RunDao {
     fun insertRun(run: Run)
 
     @Query("DELETE FROM runs WHERE id IN (:idList)")
-    fun deleteRun(idList: List<Int>)
+    fun deleteRun(idList: List<String>)
 
     @Query("DELETE FROM runs WHERE email = :email")
     fun deleteAllRuns(email: String)
