@@ -12,6 +12,7 @@ data class Position(
     var longitude: Double = 0.0,
     var timeReachedPosition: Long = 0,
     var caloriesBurnt: Double = 0.0,
+    var speedInMetresPerSecond: Float = 0f,
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null

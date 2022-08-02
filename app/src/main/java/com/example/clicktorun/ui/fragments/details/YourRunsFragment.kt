@@ -85,8 +85,8 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.miDelete) {
-            mainViewModel.deleteRun(RunAdapter.selectedItems)
             mainViewModel.deletePositionList(RunAdapter.selectedItems)
+            mainViewModel.deleteRun(RunAdapter.selectedItems)
             hideActionMenu()
             binding.root.createSnackBar("Run has been deleted successfully").apply {
                 anchorView = binding.anchor

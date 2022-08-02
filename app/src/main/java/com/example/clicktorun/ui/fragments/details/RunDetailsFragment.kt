@@ -1,7 +1,6 @@
 package com.example.clicktorun.ui.fragments.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -9,13 +8,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.clicktorun.R
+import com.example.clicktorun.data.models.Position
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.FragmentRunDetailsBinding
-import com.example.clicktorun.ui.adapter.RunAdapter
 import com.example.clicktorun.ui.viewmodels.MainViewModel
+import com.example.clicktorun.utils.getDistance
 import com.example.clicktorun.utils.isNightModeEnabled
 import com.example.clicktorun.utils.setActionToolbar
 import com.example.clicktorun.utils.toTimeString
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLngBounds
@@ -81,6 +85,7 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
             }
         }
         mainViewModel.runRoute.observe(viewLifecycleOwner) {
+            run ?: return@observe
             val bounds = LatLngBounds.builder()
             for (route in it) {
                 map?.addPolyline(
@@ -102,8 +107,84 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
                     (binding.map.width * 0.05).toInt()
                 )
             )
+            val positionList = mutableListOf<Position>()
+            for (positions in it) {
+                positionList.addAll(positions)
+            }
+            binding.distanceOverTimeGraph.apply {
+                val values = mutableListOf<Entry>()
+                for (i in positionList.indices) {
+                    val position = positionList[i]
+                    val latLngList = positionList.subList(0, i + 1).map { pos ->
+                        pos.getLatLng()
+                    }
+                    val distanceRan = listOf(latLngList)
+                        .getDistance()
+                        .toFloat()
+                    values.add(
+                        Entry(
+                            (position.timeReachedPosition - (run!!.timeEnded - run!!.timeTakenInMilliseconds)).toFloat(),
+                            distanceRan
+                        )
+                    )
+                }
+                val lineDataSet = createLineDataSet(values, "Distance ran over time")
+                data = LineData(listOf(lineDataSet))
+                setUpGraph(this)
+                invalidate()
+            }
+            binding.averageSpeedOverTimeGraph.apply {
+                val values = mutableListOf<Entry>()
+                for (i in positionList.indices) {
+                    val position = positionList[i]
+                    values.add(
+                        Entry(
+                            (position.timeReachedPosition - (run!!.timeEnded - run!!.timeTakenInMilliseconds)).toFloat(),
+                            (position.speedInMetresPerSecond * 3.6).toFloat()
+                        )
+                    )
+                }
+                val lineDataSet = createLineDataSet(values, "Average speed over time")
+                data = LineData(listOf(lineDataSet))
+                setUpGraph(this)
+                invalidate()
+            }
+            binding.caloriesBurntOverTimeGraph.apply {
+                val values = mutableListOf<Entry>()
+                for (i in positionList.indices) {
+                    val position = positionList[i]
+                    values.add(
+                        Entry(
+                            (position.timeReachedPosition - (run!!.timeEnded - run!!.timeTakenInMilliseconds)).toFloat(),
+                            position.caloriesBurnt.toFloat()
+                        )
+                    )
+                }
+                val lineDataSet = createLineDataSet(values, "Calories burnt over time")
+                data = LineData(listOf(lineDataSet))
+                setUpGraph(this)
+                invalidate()
+            }
         }
         mainViewModel.getCurrentUser()
+    }
+
+    private fun createLineDataSet(values: List<Entry>, label: String) =
+        LineDataSet(values, label).apply {
+            setDrawValues(false)
+            setDrawCircles(false)
+            lineWidth = 2f
+        }
+
+    private fun setUpGraph(lineChart: LineChart) {
+        lineChart.apply {
+            setTouchEnabled(false)
+            xAxis.isEnabled = false
+            axisLeft.isEnabled = false
+            axisRight.isEnabled = false
+            legend.isEnabled = false
+            description = null
+        }
     }
 
     private fun checkIfDeleted(): Boolean {

@@ -14,12 +14,12 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import com.example.clicktorun.R
+import com.example.clicktorun.data.models.Position
 import com.example.clicktorun.utils.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -47,7 +47,7 @@ class RunService : LifecycleService() {
 
     companion object {
         val isTracking = MutableLiveData<Boolean>()
-        val runPath = MutableLiveData<MutableList<MutableList<LatLng>>>()
+        val runPath = MutableLiveData<MutableList<MutableList<Position>>>()
         val distanceRanInMetres = MutableLiveData<Int>()
         val timeTaken = MutableLiveData<Long>()
     }
@@ -86,7 +86,14 @@ class RunService : LifecycleService() {
             stopTrackingLocation()
         }
         runPath.observe(this) {
-            distanceRanInMetres.value = it.getDistance()
+            distanceRanInMetres.value = it.run {
+                val latlngList = map { route ->
+                    route.map { pos ->
+                        pos.getLatLng()
+                    }.toList()
+                }.toList()
+                latlngList.getDistance()
+            }
         }
     }
 
@@ -146,9 +153,13 @@ class RunService : LifecycleService() {
 
     private fun addLocation(location: Location) {
         runPath.value!!.apply {
-            last().add(location.run {
-                LatLng(latitude, longitude)
-            })
+            val position = Position(
+                latitude = location.latitude,
+                longitude = location.longitude,
+                speedInMetresPerSecond = location.speed,
+                timeReachedPosition = System.currentTimeMillis(),
+            )
+            last().add(position)
             if (isTracking.value == false) return
             runPath.value = this
         }

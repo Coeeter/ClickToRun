@@ -2,7 +2,6 @@ package com.example.clicktorun.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -98,13 +97,13 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
     private fun setUpServiceListeners() {
         RunService.runPath.observe(viewLifecycleOwner) {
             runPath = it.map { list ->
-                list.map { latLng ->
-                    Position(
-                        latitude = latLng.latitude,
-                        longitude = latLng.longitude,
-                        timeReachedPosition = System.currentTimeMillis(),
-                        caloriesBurnt = getCaloriesBurnt(),
-                    )
+                list.mapIndexed { i, pos ->
+                    val distanceRan = listOf(list.subList(0, i + 1).map { p ->
+                        p.getLatLng()
+                    }).getDistance()
+                    pos.apply {
+                        caloriesBurnt = round(((distanceRan / 1000.0) * weight) * 100) / 100
+                    }
                 }.toMutableList()
             }.toMutableList()
             if (RunService.isTracking.value == false) return@observe
@@ -115,12 +114,12 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
                     googleMap?.addPolyline(PolylineOptions().apply {
                         color(requireContext().getColor(R.color.primary))
                         width(8f)
-                        addAll(it[i])
+                        addAll(it[i].map { pos -> pos.getLatLng() })
                     })
                 }
                 googleMap?.animateCamera(
                     CameraUpdateFactory.newCameraPosition(
-                        CameraPosition.fromLatLngZoom(it.last().last(), 18f)
+                        CameraPosition.fromLatLngZoom(it.last().last().getLatLng(), 18f)
                     )
                 )
             }

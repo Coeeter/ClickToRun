@@ -46,10 +46,10 @@ fun Int.formatDistance(): String {
     return "${kilometres}km ${metres}m"
 }
 
-fun MutableList<MutableList<LatLng>>.getDistance(): Int {
+fun List<List<LatLng>>.getDistance(): Int {
     var totalDistance = 0f
     this.forEach { list ->
-        if (list.size == 0) return@forEach
+        if (list.isEmpty()) return@forEach
         for (i in 0 until list.lastIndex) {
             totalDistance += FloatArray(1).apply {
                 Location.distanceBetween(

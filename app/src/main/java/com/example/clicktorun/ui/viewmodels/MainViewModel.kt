@@ -91,8 +91,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun deletePositionList(runList: List<Run>) {
+        val idList = runList.map { it.id }
         viewModelScope.launch {
-            for (run in runList) runRepository.deletePositions(run)
+            for (id in idList) runRepository.deletePositions(id)
         }
     }
 }

@@ -25,9 +25,9 @@ class RunRepository @Inject constructor(
         }
     }
 
-    suspend fun deletePositions(run: Run) {
+    suspend fun deletePositions(runId: String) {
         withContext(Dispatchers.IO) {
-            positionDao.deletePositionList(run.id)
+            positionDao.deletePositionList(runId)
         }
     }
 
