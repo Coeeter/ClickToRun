@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
@@ -35,6 +36,7 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
     private var map: GoogleMap? = null
     private var run: Run? = null
     private var isDeleted = false
+    private val bounds = LatLngBounds.Builder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +60,7 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
             )
         }
         binding.progress.isVisible = true
+        binding.mainContent.isVisible = false
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
@@ -65,6 +68,30 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
             map = it
             configureMapType()
         }
+        binding.showRouteBtn.setOnClickListener {
+            map?.animateCamera(getCameraUpdate())
+        }
+    }
+
+    private fun getCameraUpdate() = CameraUpdateFactory.newLatLngBounds(
+        bounds.build(),
+        binding.map.width,
+        binding.map.height,
+        (binding.map.width * 0.05).toInt(),
+    )
+
+    private fun setUpMap(fullRoute: List<List<LatLng>>) {
+        for (route in fullRoute) {
+            map?.addPolyline(
+                PolylineOptions().apply {
+                    width(8f)
+                    color(requireContext().getColor(R.color.primary))
+                    addAll(route)
+                }
+            )
+            route.forEach { pos -> bounds.include(pos) }
+        }
+        map?.moveCamera(getCameraUpdate())
     }
 
     private fun setUpViewModelListeners() {
@@ -72,6 +99,7 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
             it ?: return@observe
             mainViewModel.getRunList(it.email).observe(viewLifecycleOwner) { runList ->
                 binding.progress.isVisible = false
+                binding.mainContent.isVisible = true
                 if (checkIfDeleted()) return@observe
                 run = runList[arguments.index]
                 binding.distanceRan.text = if (run!!.distanceRanInMetres < 1000)
@@ -86,27 +114,9 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
         }
         mainViewModel.runRoute.observe(viewLifecycleOwner) {
             run ?: return@observe
-            val bounds = LatLngBounds.builder()
-            for (route in it) {
-                map?.addPolyline(
-                    PolylineOptions().apply {
-                        width(8f)
-                        color(requireContext().getColor(R.color.primary))
-                        addAll(route.map { pos ->
-                            pos.getLatLng()
-                        })
-                    }
-                )
-                route.forEach { pos -> bounds.include(pos.getLatLng()) }
-            }
-            map?.moveCamera(
-                CameraUpdateFactory.newLatLngBounds(
-                    bounds.build(),
-                    binding.map.width,
-                    binding.map.height,
-                    (binding.map.width * 0.05).toInt()
-                )
-            )
+            setUpMap(it.map { list ->
+                list.map { pos -> pos.getLatLng() }
+            })
             val positionList = mutableListOf<Position>()
             for (positions in it) {
                 positionList.addAll(positions)
@@ -173,6 +183,7 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
         LineDataSet(values, label).apply {
             setDrawValues(false)
             setDrawCircles(false)
+            colors = listOf(requireContext().getColor(R.color.primary))
             lineWidth = 2f
         }
 

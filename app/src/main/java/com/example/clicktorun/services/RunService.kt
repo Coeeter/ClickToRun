@@ -183,7 +183,12 @@ class RunService : LifecycleService() {
             notificationBuilder.build()
         )
         timeTaken.observe(this) {
-            currentNotificationBuilder.setContentText(it.toTimeString())
+            var distanceRan = "${distanceRanInMetres.value}m"
+            if (distanceRanInMetres.value!! > 1000) distanceRan =
+                "${distanceRanInMetres.value!! / 1000}km"
+            currentNotificationBuilder
+                .setContentText(it.toTimeString())
+                .setContentTitle("You have ran $distanceRan, keep it up!")
             notificationManager.notify(NOTIFICATION_ID, currentNotificationBuilder.build())
         }
     }
