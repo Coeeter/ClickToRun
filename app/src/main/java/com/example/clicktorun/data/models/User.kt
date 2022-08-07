@@ -1,6 +1,6 @@
 package com.example.clicktorun.data.models
 
-import android.net.Uri
+import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.DocumentSnapshot
 
 data class User constructor(
@@ -8,9 +8,9 @@ data class User constructor(
     val email: String,
     val heightInMetres: Double,
     val weightInKilograms: Double,
-    val profileImage: String? = null
+    val profileImage: LiveData<String?>? = null,
 ) {
-    constructor(doc: DocumentSnapshot, path: String? = null) : this(
+    constructor(doc: DocumentSnapshot, path: LiveData<String?>? = null) : this(
         doc.getString("username")!!,
         doc.id,
         doc.getDouble("heightInCentimetres")!! / 100.0,

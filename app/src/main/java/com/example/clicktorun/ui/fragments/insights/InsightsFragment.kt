@@ -1,8 +1,6 @@
-package com.example.clicktorun.ui.fragments
+package com.example.clicktorun.ui.fragments.insights
 
 import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.SweepGradient
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment

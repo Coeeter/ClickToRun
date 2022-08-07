@@ -1,21 +1,18 @@
 package com.example.clicktorun.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.RecyclerviewRunDetailsItemBinding
-import com.example.clicktorun.ui.fragments.details.YourRunsFragmentDirections
 import com.example.clicktorun.utils.isNightModeEnabled
 import com.example.clicktorun.utils.toTimeString
 import kotlin.math.round
 
 class RunAdapter(
-    private val runList: List<Run>,
+    val runList: List<Run>,
     private val navController: NavController,
     private val listener: AdapterListener,
 ) : RecyclerView.Adapter<RunAdapter.ViewHolder>() {
@@ -60,9 +57,8 @@ class RunAdapter(
                 listener.onLongPressed(this@RunAdapter)
             }
             root.setOnClickListener {
-                if (!selectable) return@setOnClickListener navController.navigate(
-                    YourRunsFragmentDirections.actionMiYourRunsToRunDetailsFragment(position)
-                )
+                if (!selectable)
+                    return@setOnClickListener listener.navigateToDetailsScreen(run)
                 if (run in selectedItems) {
                     selectedItems.remove(run)
                     selected.visibility = View.GONE
@@ -84,6 +80,7 @@ class RunAdapter(
     interface AdapterListener {
         fun onItemSizeChanged(size: Int)
         fun onLongPressed(adapter: RunAdapter): Boolean
+        fun navigateToDetailsScreen(run: Run)
     }
 
 }

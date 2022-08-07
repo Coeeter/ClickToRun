@@ -12,6 +12,7 @@ import com.example.clicktorun.R
 import com.example.clicktorun.databinding.FragmentDeleteAccountBinding
 import com.example.clicktorun.ui.activities.AuthActivity
 import com.example.clicktorun.ui.viewmodels.AuthViewModel
+import com.example.clicktorun.ui.viewmodels.MainViewModel
 import com.example.clicktorun.utils.ACTION_NAVIGATE_TO_LOGIN
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.hideKeyboard
@@ -22,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class DeleteAccountFragment : Fragment(R.layout.fragment_delete_account) {
     private lateinit var binding: FragmentDeleteAccountBinding
     private val authViewModel: AuthViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,11 +66,14 @@ class DeleteAccountFragment : Fragment(R.layout.fragment_delete_account) {
             findNavController().popBackStack()
         }
         binding.passwordInput.editText?.addTextChangedListener {
-            binding.passwordInput.isErrorEnabled = false;
+            binding.passwordInput.isErrorEnabled = false
             authViewModel.password = it.toString()
         }
         binding.btnDeleteAccount.setOnClickListener {
             requireActivity().hideKeyboard()
+            mainViewModel.deleteAllPosts()
+            mainViewModel.deleteAllFollowsAndFollowing()
+            mainViewModel.deleteAllPositions()
             authViewModel.deleteUserAccount()
         }
     }

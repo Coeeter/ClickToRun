@@ -1,4 +1,4 @@
-package com.example.clicktorun.ui.fragments
+package com.example.clicktorun.ui.fragments.tracking
 
 import android.content.Intent
 import android.os.Bundle
@@ -182,7 +182,10 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
                             mainViewModel.insertPositionList(
                                 runPath.map { list ->
                                     list.map { position ->
-                                        position.apply { this.runId = runId }
+                                        position.apply {
+                                            this.runId = runId
+                                            this.email = run.email!!
+                                        }
                                     }
                                 }
                             )

@@ -10,3 +10,4 @@ const val NOTIFICATION_CHANNEL_NAME = "ClickToRun"
 const val NOTIFICATION_ID = 100
 const val CLICK_TOLERANCE = 10f
 const val REQUEST_CODE_TO_PICK_IMAGE = 183
+const val ONE_MEGABYTE: Long = 1024 * 1024

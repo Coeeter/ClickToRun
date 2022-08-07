@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="overlay">#9C000000</color>
+    <color name="unselectedColor">#B3FFFFFF</color>
+    <color name="selectedColor">#FFFFFFFF</color>
 </resources>

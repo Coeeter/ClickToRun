@@ -1,25 +1,26 @@
 package com.example.clicktorun.ui.fragments.details
 
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Position
 import com.example.clicktorun.data.models.Run
 import com.example.clicktorun.databinding.FragmentRunDetailsBinding
+import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.ui.viewmodels.MainViewModel
-import com.example.clicktorun.utils.getDistance
-import com.example.clicktorun.utils.isNightModeEnabled
-import com.example.clicktorun.utils.setActionToolbar
-import com.example.clicktorun.utils.toTimeString
+import com.example.clicktorun.utils.*
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -27,16 +28,23 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.max
+import kotlin.math.min
 
 @AndroidEntryPoint
 class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
     private lateinit var binding: FragmentRunDetailsBinding
-    private val mainViewModel: MainViewModel by viewModels()
-    private val arguments: RunDetailsFragmentArgs by navArgs()
+    private val mainViewModel: MainViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by viewModels()
     private var map: GoogleMap? = null
     private var run: Run? = null
+    private var isPosted = false
+    private var route: List<List<Position>>? = null
     private var isDeleted = false
-    private val bounds = LatLngBounds.Builder()
+    private var deleteMenuItem: MenuItem? = null
+    private var shareMenuItem: MenuItem? = null
+    private var hideMenuItem: MenuItem? = null
+    private var bounds: LatLngBounds? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,149 +61,181 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
     }
 
     private fun setUpUiListeners() {
-        requireContext().resources.displayMetrics.apply {
-            binding.progress.layoutParams = ViewGroup.LayoutParams(
-                widthPixels,
-                heightPixels
-            )
-        }
-        binding.progress.isVisible = true
-        binding.mainContent.isVisible = false
+        deleteMenuItem?.isVisible = false
+        shareMenuItem?.isVisible = false
+        hideMenuItem?.isVisible = false
+        binding.fullProgress.isVisible = true
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
         binding.map.getMapAsync {
             map = it
             configureMapType()
+            setUpMap()
         }
         binding.showRouteBtn.setOnClickListener {
-            map?.animateCamera(getCameraUpdate())
+            getCameraUpdate()?.let { map?.animateCamera(it) }
         }
     }
 
-    private fun getCameraUpdate() = CameraUpdateFactory.newLatLngBounds(
-        bounds.build(),
-        binding.map.width,
-        binding.map.height,
-        (binding.map.width * 0.05).toInt(),
-    )
+    private fun getCameraUpdate(): CameraUpdate? {
+        if (bounds == null) return null
+        return CameraUpdateFactory.newLatLngBounds(
+            bounds!!,
+            binding.map.width,
+            binding.map.height,
+            (binding.map.width * 0.05).toInt(),
+        )
+    }
 
-    private fun setUpMap(fullRoute: List<List<LatLng>>) {
-        for (route in fullRoute) {
+    private fun setUpMap() {
+        if (route == null) return
+        map?.clear()
+        val fullRoute = route!!.convertToLatLng()
+        var south = fullRoute[0][0].latitude
+        var north = fullRoute[0][0].latitude
+        var east = fullRoute[0][0].longitude
+        var west = fullRoute[0][0].longitude
+        for (latLngList in fullRoute) {
             map?.addPolyline(
                 PolylineOptions().apply {
                     width(8f)
                     color(requireContext().getColor(R.color.primary))
-                    addAll(route)
+                    addAll(latLngList)
                 }
             )
-            route.forEach { pos -> bounds.include(pos) }
+            latLngList.forEach { latlng ->
+                south = min(south, latlng.latitude)
+                north = max(north, latlng.latitude)
+                west = min(west, latlng.longitude)
+                east = max(east, latlng.longitude)
+            }
         }
-        map?.moveCamera(getCameraUpdate())
+        bounds = LatLngBounds(
+            LatLng(south, west),
+            LatLng(north, east)
+        )
+        getCameraUpdate()?.let { map?.moveCamera(it) }
     }
 
     private fun setUpViewModelListeners() {
-        mainViewModel.user.observe(viewLifecycleOwner) {
-            it ?: return@observe
-            mainViewModel.getRunList(it.email).observe(viewLifecycleOwner) { runList ->
-                binding.progress.isVisible = false
-                binding.mainContent.isVisible = true
-                if (checkIfDeleted()) return@observe
-                run = runList[arguments.index]
-                binding.distanceRan.text = if (run!!.distanceRanInMetres < 1000)
-                    "${run!!.distanceRanInMetres}m"
-                else
-                    "${run!!.distanceRanInMetres / 1000}km"
-                binding.timeTaken.text = run!!.timeTakenInMilliseconds.toTimeString()
-                binding.averageSpeed.text = "${run!!.averageSpeedInKilometersPerHour}km/h"
-                binding.caloriesBurnt.text = "${run!!.caloriesBurnt}kcal"
-                mainViewModel.getPositionList(run!!)
+        mainViewModel.getAllPosts().observe(viewLifecycleOwner) { postList ->
+            if (authViewModel.currentUser!!.email!! != run!!.email) {
+                shareMenuItem?.isVisible = false
+                hideMenuItem?.isVisible = false
+                deleteMenuItem?.isVisible = false
+                return@observe
             }
+            isPosted = postList.map { it.run.id }.contains(run?.id)
+            shareMenuItem?.isVisible = !isPosted
+            hideMenuItem?.isVisible = isPosted
+            deleteMenuItem?.isVisible = true
+        }
+        mainViewModel.selectedRun.observe(viewLifecycleOwner) {
+            run = it
+            bindData(run!!)
+            mainViewModel.getPositionList(run!!)
+        }
+        mainViewModel.selectedRoute.observe(viewLifecycleOwner) {
+            route = it
+            setUpMap()
+            setUpGraph()
+            binding.fullProgress.isVisible = false
         }
         mainViewModel.runRoute.observe(viewLifecycleOwner) {
-            run ?: return@observe
-            setUpMap(it.map { list ->
-                list.map { pos -> pos.getLatLng() }
-            })
-            val positionList = mutableListOf<Position>()
-            for (positions in it) {
-                positionList.addAll(positions)
-            }
-            binding.distanceOverTimeGraph.apply {
-                val values = mutableListOf<Entry>()
-                for (i in positionList.indices) {
-                    val position = positionList[i]
-                    val latLngList = positionList.subList(0, i + 1).map { pos ->
-                        pos.getLatLng()
+            if (it == null || it.isEmpty()) return@observe
+            route = it
+            setUpMap()
+            setUpGraph()
+            binding.fullProgress.isVisible = false
+        }
+        mainViewModel.postState.observe(viewLifecycleOwner) {
+            when (it) {
+                is MainViewModel.PostState.Loading -> {
+                    binding.fullProgress.isVisible = true
+                }
+                is MainViewModel.PostState.Success -> {
+                    binding.fullProgress.isVisible = false
+                    var message = it.message
+                    if (isDeleted) message = "Deleted run successfully"
+                    binding.root
+                        .createSnackBar(
+                            message,
+                            okayAction = true
+                        ).show()
+                    if (isDeleted) {
+                        findNavController().popBackStack()
+                        return@observe
                     }
-                    val distanceRan = listOf(latLngList)
-                        .getDistance()
-                        .toFloat()
-                    values.add(
-                        Entry(
-                            (position.timeReachedPosition - (run!!.timeEnded - run!!.timeTakenInMilliseconds)).toFloat(),
-                            distanceRan
-                        )
-                    )
+                    shareMenuItem?.isVisible = !it.isInserted
+                    hideMenuItem?.isVisible = it.isInserted
                 }
-                val lineDataSet = createLineDataSet(values, "Distance ran over time")
-                data = LineData(listOf(lineDataSet))
-                setUpGraph(this)
-                invalidate()
-            }
-            binding.averageSpeedOverTimeGraph.apply {
-                val values = mutableListOf<Entry>()
-                for (i in positionList.indices) {
-                    val position = positionList[i]
-                    values.add(
-                        Entry(
-                            (position.timeReachedPosition - (run!!.timeEnded - run!!.timeTakenInMilliseconds)).toFloat(),
-                            (position.speedInMetresPerSecond * 3.6).toFloat()
-                        )
-                    )
+                is MainViewModel.PostState.Failure -> {
+                    binding.fullProgress.isVisible = false
+                    binding.root.createSnackBar(it.message, okayAction = true).show()
                 }
-                val lineDataSet = createLineDataSet(values, "Average speed over time")
-                data = LineData(listOf(lineDataSet))
-                setUpGraph(this)
-                invalidate()
-            }
-            binding.caloriesBurntOverTimeGraph.apply {
-                val values = mutableListOf<Entry>()
-                for (i in positionList.indices) {
-                    val position = positionList[i]
-                    values.add(
-                        Entry(
-                            (position.timeReachedPosition - (run!!.timeEnded - run!!.timeTakenInMilliseconds)).toFloat(),
-                            position.caloriesBurnt.toFloat()
-                        )
-                    )
+                else -> {
                 }
-                val lineDataSet = createLineDataSet(values, "Calories burnt over time")
-                data = LineData(listOf(lineDataSet))
-                setUpGraph(this)
-                invalidate()
             }
         }
-        mainViewModel.getCurrentUser()
     }
 
-    private fun createLineDataSet(values: List<Entry>, label: String) =
-        LineDataSet(values, label).apply {
-            setDrawValues(false)
-            setDrawCircles(false)
-            colors = listOf(requireContext().getColor(R.color.primary))
-            lineWidth = 2f
+    private fun setUpGraph() {
+        if (route == null) return
+        val positionList = route!!.flatten()
+        run?.let {
+            val graphList = binding.run {
+                listOf(distanceOverTimeGraph, averageSpeedOverTimeGraph, caloriesBurntOverTimeGraph)
+            }
+            for (i in graphList.indices) setUpGraphValues(
+                graphList[i],
+                it,
+                positionList,
+                MainViewModel.GraphType.values()[i]
+            )
         }
+    }
 
-    private fun setUpGraph(lineChart: LineChart) {
-        lineChart.apply {
+    private fun setUpGraphValues(
+        graph: LineChart,
+        run: Run,
+        positionList: List<Position>,
+        graphType: MainViewModel.GraphType,
+    ) {
+        graph.apply {
+            val lineDataSet = LineDataSet(
+                mainViewModel.getEntryList(
+                    run,
+                    positionList,
+                    graphType
+                ),
+                ""
+            ).apply {
+                setDrawValues(false)
+                setDrawCircles(false)
+                colors = listOf(requireContext().getColor(R.color.primary))
+                lineWidth = 2f
+            }
+            data = LineData(listOf(lineDataSet))
             setTouchEnabled(false)
-            xAxis.isEnabled = false
-            axisLeft.isEnabled = false
-            axisRight.isEnabled = false
-            legend.isEnabled = false
+            for (axis in listOf(xAxis, axisLeft, axisRight, legend))
+                axis.isEnabled = false
             description = null
+            invalidate()
         }
+    }
+
+    private fun bindData(run: Run) {
+        binding.distanceRan.text = if (run.distanceRanInMetres < 1000)
+            "${run.distanceRanInMetres}m"
+        else
+            "${run.distanceRanInMetres / 1000}km"
+        binding.timeTaken.text = run.timeTakenInMilliseconds.toTimeString()
+        binding.averageSpeed.text = "${run.averageSpeedInKilometersPerHour}km/h"
+        binding.caloriesBurnt.text = "${run.caloriesBurnt}kcal"
+        val timeStartedInMilliseconds = run.timeEnded - run.timeTakenInMilliseconds
+        binding.dateRan.text = timeStartedInMilliseconds.getDate()
+        binding.timeRan.text = timeStartedInMilliseconds.getTime()
     }
 
     private fun checkIfDeleted(): Boolean {
@@ -213,21 +253,50 @@ class RunDetailsFragment : Fragment(R.layout.fragment_run_details) {
             )
             return
         }
-        map?.setMapStyle(MapStyleOptions("[]"));
+        map?.setMapStyle(MapStyleOptions("[]"))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_menu, menu)
+        deleteMenuItem = menu.findItem(R.id.miDelete).apply {
+            isVisible = false
+        }
+        shareMenuItem = menu.findItem(R.id.miShare).apply {
+            isVisible = false
+        }
+        hideMenuItem = menu.findItem(R.id.miArchive).apply {
+            isVisible = false
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.miDelete -> {
-                binding.progress.isVisible = true
-                mainViewModel.deleteRun(listOf(run!!))
+                binding.fullProgress.isVisible = true
+                if (isPosted) mainViewModel.removePost(run!!.id)
                 mainViewModel.deletePositionList(listOf(run!!))
+                mainViewModel.deleteRun(listOf(run!!))
                 isDeleted = true
+                if (!isPosted) {
+                    binding.root.createSnackBar(
+                        message = "Deleted run successfully",
+                        okayAction = true
+                    ).show()
+                    findNavController().popBackStack()
+                }
+                true
+            }
+            R.id.miShare -> {
+                run?.let {
+                    mainViewModel.insertPost(it, route!!)
+                }
+                true
+            }
+            R.id.miArchive -> {
+                run?.let {
+                    mainViewModel.removePost(it.id)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

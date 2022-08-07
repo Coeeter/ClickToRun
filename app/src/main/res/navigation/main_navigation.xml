@@ -35,14 +35,22 @@
     </fragment>
     <fragment
         android:id="@+id/miInsights"
-        android:name="com.example.clicktorun.ui.fragments.InsightsFragment"
+        android:name="com.example.clicktorun.ui.fragments.insights.InsightsFragment"
         android:label="fragment_insights"
         tools:layout="@layout/fragment_insights" />
     <fragment
         android:id="@+id/miExplore"
-        android:name="com.example.clicktorun.ui.fragments.ExploreFragment"
+        android:name="com.example.clicktorun.ui.fragments.explore.ExploreFragment"
         android:label="fragment_leaderboard"
-        tools:layout="@layout/fragment_explore" />
+        tools:layout="@layout/fragment_explore">
+        <action
+            android:id="@+id/action_miExplore_to_runDetailsFragment"
+            app:destination="@id/runDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/miSettings"
         android:name="com.example.clicktorun.ui.fragments.settings.SettingsFragment"
@@ -67,7 +75,7 @@
     </fragment>
     <fragment
         android:id="@+id/trackingFragment"
-        android:name="com.example.clicktorun.ui.fragments.TrackingFragment"
+        android:name="com.example.clicktorun.ui.fragments.tracking.TrackingFragment"
         android:label="fragment_tracking"
         tools:layout="@layout/fragment_tracking">
         <action
@@ -100,9 +108,5 @@
         android:id="@+id/runDetailsFragment"
         android:name="com.example.clicktorun.ui.fragments.details.RunDetailsFragment"
         android:label="fragment_run_details"
-        tools:layout="@layout/fragment_run_details" >
-        <argument
-            android:name="index"
-            app:argType="integer" />
-    </fragment>
+        tools:layout="@layout/fragment_run_details" />
 </navigation>

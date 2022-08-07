@@ -1,7 +1,6 @@
 package com.example.clicktorun.ui.viewmodels
 
 import android.net.Uri
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +10,6 @@ import com.example.clicktorun.data.models.User
 import com.example.clicktorun.repositories.AuthRepository
 import com.example.clicktorun.repositories.RunRepository
 import com.example.clicktorun.repositories.UserRepository
-import com.google.firebase.FirebaseError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -21,7 +19,7 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
-    private val runRepository: RunRepository
+    private val runRepository: RunRepository,
 ) : ViewModel() {
     private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
     val authState: LiveData<AuthState>
@@ -34,6 +32,8 @@ class AuthViewModel @Inject constructor(
     var weight: String? = null
     var height: String? = null
     var uri: Uri? = null
+
+    val currentUser = authRepository.getAuthUser()
 
     fun logIn() {
         val emailCheck = !validateEmailFields(email)
@@ -138,9 +138,11 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _authState.value = AuthState.Loading
-                authRepository.login(authRepository.getAuthUser()!!.email!!, password!!).await()
-                runRepository.deleteAllRunsFromLocal(authRepository.getAuthUser()!!.email!!)
-                if (!userRepository.deleteUser(authRepository.getAuthUser()!!.email!!))
+                val email = authRepository.getAuthUser()!!.email!!
+                authRepository.login(email, password!!).await()
+                runRepository.deleteAllRunsFromLocal(email)
+                val deleteUserResult = userRepository.deleteUser(email)
+                if (!deleteUserResult)
                     return@launch _authState.setValue(AuthState.FireBaseFailure())
                 authRepository.getAuthUser()?.delete()?.await()
                 _authState.value = AuthState.Success
@@ -154,7 +156,7 @@ class AuthViewModel @Inject constructor(
     }
 
     suspend fun getCurrentUserState() = hashMapOf(
-        "firebaseUser" to authRepository.getAuthUser(),
+        "firebaseUser" to currentUser,
         "firestoreUser" to userRepository.getCurrentUser()
     )
 

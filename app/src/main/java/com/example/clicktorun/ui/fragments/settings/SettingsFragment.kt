@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -43,18 +44,25 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             user!!.profileImage
                 ?: return@observe binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
                     .run { binding.imageProgress.visibility = View.GONE }
-            Picasso.with(requireContext())
-                .load(user!!.profileImage)
-                .into(binding.profileImage, object : Callback {
-                    override fun onSuccess() {
-                        binding.imageProgress.visibility = View.GONE
-                    }
+            user!!.profileImage?.observe(viewLifecycleOwner) { image ->
+                if (image == null) {
+                    binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
+                    binding.imageProgress.isVisible = false
+                    return@observe
+                }
+                Picasso.with(requireContext())
+                    .load(image)
+                    .into(binding.profileImage, object : Callback {
+                        override fun onSuccess() {
+                            binding.imageProgress.visibility = View.GONE
+                        }
 
-                    override fun onError() {
-                        binding.imageProgress.visibility = View.GONE
-                        binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                    }
-                })
+                        override fun onError() {
+                            binding.imageProgress.visibility = View.GONE
+                            binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
+                        }
+                    })
+            }
         }
         mainViewModel.getCurrentUser()
     }

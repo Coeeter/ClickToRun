@@ -1,7 +1,9 @@
-package com.example.clicktorun.data.daos
+package com.example.clicktorun.data.impls
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.example.clicktorun.data.daos.UserDao
 import com.example.clicktorun.data.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -27,11 +29,19 @@ class UserDaoImpl(
                 !documentSnapshot.contains("weightInKilograms")
             ) return null
             if (documentSnapshot.contains("profileImage")) {
-                val uri = firebaseStorage.reference
+                val imageLiveData = MutableLiveData<String?>()
+                firebaseStorage.reference
                     .child(documentSnapshot.getString("profileImage")!!)
                     .downloadUrl
-                    .await()
-                return User(documentSnapshot, uri.toString())
+                    .addOnCompleteListener {
+                        if (!it.isSuccessful || it.exception != null) {
+                            Log.d("poly", it.exception!!.message.toString())
+                            it.exception!!.printStackTrace()
+                            imageLiveData.value = null
+                        }
+                        imageLiveData.value = it.result.toString()
+                    }
+                return User(documentSnapshot, imageLiveData)
             }
             return User(documentSnapshot)
         } catch (e: Exception) {

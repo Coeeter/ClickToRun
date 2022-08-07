@@ -31,6 +31,12 @@ class RunRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteAllPositions(email: String) {
+        withContext(Dispatchers.IO) {
+            positionDao.deleteAllPositions(email)
+        }
+    }
+
     suspend fun insertRunToLocal(run: Run) {
         withContext(Dispatchers.IO) {
             runDao.insertRun(run)

@@ -53,17 +53,24 @@ class EditAccountFragment : Fragment(R.layout.fragment_edit_account) {
                 ?: return@observe binding.imageProgress.setVisibility(View.GONE).run {
                     binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
                 }
-            Picasso.with(context).load(it.profileImage)
-                .into(binding.profileImage, object : Callback {
-                    override fun onSuccess() {
-                        binding.imageProgress.visibility = View.GONE
-                    }
+            it.profileImage.observe(viewLifecycleOwner) { image ->
+                if (image == null) {
+                    binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
+                    binding.imageProgress.visibility = View.GONE
+                    return@observe
+                }
+                Picasso.with(context).load(image)
+                    .into(binding.profileImage, object : Callback {
+                        override fun onSuccess() {
+                            binding.imageProgress.visibility = View.GONE
+                        }
 
-                    override fun onError() {
-                        binding.imageProgress.visibility = View.GONE
-                        binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                    }
-                })
+                        override fun onError() {
+                            binding.imageProgress.visibility = View.GONE
+                            binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
+                        }
+                    })
+            }
         }
         mainViewModel.getCurrentUser()
         authViewModel.authState.observe(viewLifecycleOwner) {

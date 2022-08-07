@@ -18,4 +18,7 @@ interface PositionDao {
     @Query("DELETE FROM positions WHERE runId = :runId")
     fun deletePositionList(runId: String?)
 
+    @Query("DELETE FROM positions WHERE email = :email")
+    fun deleteAllPositions(email: String)
+
 }

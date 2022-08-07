@@ -12,9 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import com.example.clicktorun.R
+import com.example.clicktorun.data.models.Position
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.R.*
 import com.google.android.material.snackbar.Snackbar
+import java.util.*
 import kotlin.math.roundToInt
 
 fun Activity.startActivityWithAnimation(intent: Intent) {
@@ -23,19 +24,40 @@ fun Activity.startActivityWithAnimation(intent: Intent) {
 }
 
 fun Long.toTimeString(): String {
-    val seconds = (this / 1000 % 60).run {
-        if (this < 10) return@run "0$this"
-        this.toString()
-    }
-    val minutes = (this / 1000 / 60 % 60).run {
-        if (this < 10) return@run "0$this"
-        this.toString()
-    }
-    val hours = (this / 1000 / 60 / 60).run {
-        if (this < 10) return@run "0$this"
-        this.toString()
-    }
+    val seconds = formatTime((this / 1000 % 60).toInt())
+    val minutes = formatTime((this / 1000 / 60 % 60).toInt())
+    val hours = formatTime((this / 1000 / 60 / 60).toInt())
     return "$hours:$minutes:$seconds"
+}
+
+fun Long.getDate(): String {
+    val calendar = Calendar.getInstance().apply {
+        timeInMillis = this@getDate
+    }
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val month = calendar.get(Calendar.MONTH)
+    val year = calendar.get(Calendar.YEAR)
+    return "$day/$month/$year"
+}
+
+fun Long.getTime(): String {
+    val calendar = Calendar.getInstance().apply {
+        timeInMillis = this@getTime
+    }
+    var hour = formatTime(calendar.get(Calendar.HOUR_OF_DAY))
+    val minute = formatTime(calendar.get(Calendar.MINUTE))
+    val second = formatTime(calendar.get(Calendar.SECOND))
+    var units = "am"
+    if (hour.toInt() >= 12) {
+        if (hour.toInt() != 12) hour = formatTime(hour.toInt() - 12)
+        units = "pm"
+    }
+    return "$hour:$minute:$second$units"
+}
+
+private fun formatTime(time: Int): String {
+    if (time < 10) return "0$time"
+    return time.toString()
 }
 
 fun Int.formatDistance(): String {
@@ -96,3 +118,11 @@ fun FragmentActivity.setActionToolbar(toolbar: Toolbar) {
 
 fun Context.isDeviceInLandscape() =
     this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+fun List<List<Position>>.convertToLatLng(): List<List<LatLng>> {
+    return map {
+        it.map { pos ->
+            pos.getLatLng()
+        }
+    }
+}

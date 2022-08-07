@@ -23,7 +23,7 @@ class CustomMap : MapView {
     ) : super(context, attrs, defStyle)
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        when(ev?.action) {
+        when (ev?.action) {
             MotionEvent.ACTION_UP -> parent.requestDisallowInterceptTouchEvent(false)
             MotionEvent.ACTION_DOWN -> parent.requestDisallowInterceptTouchEvent(true)
         }

@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,8 +23,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     private lateinit var binding: FragmentRunsBinding
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
     private var menuItem: MenuItem? = null
+    private var shareMenuItem: MenuItem? = null
+    private var hideMenuItem: MenuItem? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,15 +59,27 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
             user ?: return@observe
             mainViewModel.getRunList(user.email).observe(viewLifecycleOwner) {
                 if (RunAdapter.selectable) return@observe
-                binding.noRunsView.visibility = View.GONE
-                binding.recyclerView.adapter = getAdapter(it)
-                binding.recyclerView.layoutManager =
-                    if (requireContext().isDeviceInLandscape())
-                        GridLayoutManager(requireContext(), 2)
-                    else
-                        LinearLayoutManager(requireContext())
-                if (it.isEmpty()) binding.noRunsView.visibility = View.VISIBLE
                 binding.progress.visibility = View.GONE
+                binding.noRunsView.visibility = View.GONE
+                if (binding.recyclerView.adapter != null) {
+                    val adapter = binding.recyclerView.adapter as RunAdapter
+                    if (adapter.runList.map { run -> run.id } == it.map { run -> run.id })
+                        return@observe
+                }
+                if (it.isEmpty()) {
+                    binding.noRunsView.visibility = View.VISIBLE
+                    binding.recyclerView.apply {
+                        adapter = null
+                        layoutManager = null
+                    }
+                    return@observe
+                }
+                binding.recyclerView.adapter = getAdapter(it)
+                var layoutManager = LinearLayoutManager(requireContext())
+                if (requireContext().isDeviceInLandscape()) {
+                    layoutManager = GridLayoutManager(requireContext(), 2)
+                }
+                binding.recyclerView.layoutManager = layoutManager
             }
         }
         mainViewModel.getCurrentUser()
@@ -79,12 +93,17 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_menu, menu)
         menuItem = menu.findItem(R.id.miDelete)
+        shareMenuItem = menu.findItem(R.id.miShare).apply { isVisible = false }
+        hideMenuItem = menu.findItem(R.id.miArchive).apply { isVisible = false }
         if (!RunAdapter.selectable) menuItem?.isVisible = false
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.miDelete) {
+            RunAdapter.selectedItems.forEach {
+                mainViewModel.removePost(it.id)
+            }
             mainViewModel.deletePositionList(RunAdapter.selectedItems)
             mainViewModel.deleteRun(RunAdapter.selectedItems)
             hideActionMenu()
@@ -105,6 +124,12 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
             }
 
             override fun onLongPressed(adapter: RunAdapter) = showActionMenu(adapter)
+            override fun navigateToDetailsScreen(run: Run) {
+                mainViewModel.setSelectedRun(run)
+                findNavController().navigate(
+                    YourRunsFragmentDirections.actionMiYourRunsToRunDetailsFragment()
+                )
+            }
         })
 
     private fun showActionMenu(adapter: RunAdapter): Boolean {
