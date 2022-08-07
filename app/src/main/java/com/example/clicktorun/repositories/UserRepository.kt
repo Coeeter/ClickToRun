@@ -10,8 +10,8 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val userDao: UserDao
 ) {
-    suspend fun getCurrentUser() = withContext(Dispatchers.IO) {
-        userDao.getUser()
+    suspend fun getUser(email: String? = null) = withContext(Dispatchers.IO) {
+        userDao.getUser(email)
     }
 
     suspend fun insertUser(user: User) = withContext(Dispatchers.IO) {

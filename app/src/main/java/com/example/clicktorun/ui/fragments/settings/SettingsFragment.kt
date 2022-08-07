@@ -27,6 +27,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val authViewModel: AuthViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
     private var user: User? = null
+    private var isLoading = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,30 +42,36 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             user = it
             it ?: return@observe
             binding.username.text = user!!.username
-            user!!.profileImage
-                ?: return@observe binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                    .run { binding.imageProgress.visibility = View.GONE }
+            if (user!!.profileImage == null) {
+                binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
+                binding.imageProgress.visibility = View.GONE
+                isLoading = false
+                return@observe
+            }
             user!!.profileImage?.observe(viewLifecycleOwner) { image ->
                 if (image == null) {
                     binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
                     binding.imageProgress.isVisible = false
+                    isLoading = false
                     return@observe
                 }
                 Picasso.with(requireContext())
                     .load(image)
                     .into(binding.profileImage, object : Callback {
                         override fun onSuccess() {
+                            isLoading = false
                             binding.imageProgress.visibility = View.GONE
                         }
 
                         override fun onError() {
+                            isLoading = false
                             binding.imageProgress.visibility = View.GONE
                             binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
                         }
                     })
             }
         }
-        mainViewModel.getCurrentUser()
+        mainViewModel.getUser()
     }
 
     private fun setUpListeners() {
@@ -88,26 +95,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             )
         }
         binding.details.setOnClickListener {
-
+            if (isLoading) return@setOnClickListener
+            findNavController().navigate(
+                SettingsFragmentDirections.actionMiSettingsToProfileFragment(email = authViewModel.currentUser!!.email!!)
+            )
         }
     }
-
-//    private fun showDeleteAlertDialog(context: Context) {
-//        MaterialAlertDialogBuilder(context, R.style.AlertDialogCustom)
-//            .setTitle("Delete all Runs?")
-//            .setMessage("Are you sure you want to delete all runs and lose its data forever?")
-//            .setPositiveButton("Yes") { dialog, _ ->
-//                dialog.dismiss()
-//                mainViewModel.deleteAllRuns(user!!.email)
-//                binding.root.createSnackBar("Successfully deleted all Runs!")
-//                    .setAnchorView(binding.anchor)
-//                    .show()
-//            }
-//            .setNegativeButton("No") { dialog, _ ->
-//                dialog.dismiss()
-//            }
-//            .show()
-//    }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)

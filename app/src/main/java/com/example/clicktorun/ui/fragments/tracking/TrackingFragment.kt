@@ -79,7 +79,7 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             weight = it.weightInKilograms
             email = it.email
         }
-        mainViewModel.getCurrentUser()
+        mainViewModel.getUser()
     }
 
     private fun setUpMap(savedInstanceState: Bundle?) {

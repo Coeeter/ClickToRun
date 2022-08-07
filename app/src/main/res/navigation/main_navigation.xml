@@ -50,6 +50,14 @@
             app:exitAnim="@anim/exit_animation"
             app:popEnterAnim="@anim/enter_animation"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_miExplore_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/miSettings"
@@ -67,6 +75,14 @@
         <action
             android:id="@+id/action_miSettings_to_deleteAccountFragment"
             app:destination="@id/deleteAccountFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_miSettings_to_profileFragment"
+            app:destination="@id/profileFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/exit_animation"
             app:launchSingleTop="false"
@@ -109,4 +125,57 @@
         android:name="com.example.clicktorun.ui.fragments.details.RunDetailsFragment"
         android:label="fragment_run_details"
         tools:layout="@layout/fragment_run_details" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.clicktorun.ui.fragments.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile">
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_profileFragment_to_profileDetailsFragment"
+            app:destination="@id/profileDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_profileFragment_to_runDetailsFragment"
+            app:destination="@id/runDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_profileFragment_to_editAccountFragment"
+            app:destination="@id/editAccountFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileDetailsFragment"
+        android:name="com.example.clicktorun.ui.fragments.profile.ProfileDetailsFragment"
+        android:label="fragment_profile_details"
+        tools:layout="@layout/fragment_profile_details">
+        <action
+            android:id="@+id/action_profileDetailsFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/exit_animation"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/enter_animation"
+            app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
+    </fragment>
 </navigation>

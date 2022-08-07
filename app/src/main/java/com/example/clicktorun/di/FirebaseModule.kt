@@ -50,6 +50,7 @@ object FirebaseModule {
     @Provides
     fun providesFollowDao(
         firebaseFirestore: FirebaseFirestore,
+        firebaseAuth: FirebaseAuth,
         firebaseStorage: FirebaseStorage
-    ): FollowDao = FollowDaoImpl(firebaseFirestore, firebaseStorage)
+    ): FollowDao = FollowDaoImpl(firebaseFirestore, firebaseAuth, firebaseStorage)
 }

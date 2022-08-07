@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.photoBottomSheet,
                 R.id.deleteAccountFragment,
                 R.id.runDetailsFragment,
+                R.id.profileFragment,
+                R.id.profileDetailsFragment,
             )
             if (destination.id in hideNavigationFragments)
                 return@addOnDestinationChangedListener binding.navBar.setVisibility(View.GONE)

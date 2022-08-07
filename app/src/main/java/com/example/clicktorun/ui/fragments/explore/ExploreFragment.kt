@@ -34,9 +34,15 @@ class ExploreFragment : Fragment(R.layout.fragment_explore) {
         binding.tabs.setupWithViewPager(binding.viewPager)
     }
 
-    fun navigateToDetailsScreen() {
+    fun navigateToRunDetailsScreen() {
         findNavController().navigate(
             ExploreFragmentDirections.actionMiExploreToRunDetailsFragment()
+        )
+    }
+
+    fun navigateToUserDetailsScreen(email: String) {
+        findNavController().navigate(
+            ExploreFragmentDirections.actionMiExploreToProfileFragment(email = email)
         )
     }
 

@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Post
@@ -93,14 +94,14 @@ class ForYouFragment : Fragment(R.layout.fragment_for_you), PostAdapter.Listener
             }
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
-        mainViewModel.getCurrentUser()
+        mainViewModel.getUser()
         mainViewModel.getAllPosts()
     }
 
     override fun setSelectedPost(post: Post) {
         mainViewModel.setSelectedRun(post.run)
         mainViewModel.setSelectedRoute(post.route)
-        (parentFragment as ExploreFragment).navigateToDetailsScreen()
+        (parentFragment as ExploreFragment).navigateToRunDetailsScreen()
     }
 
     override fun hidePost(runId: String) =
@@ -109,7 +110,10 @@ class ForYouFragment : Fragment(R.layout.fragment_for_you), PostAdapter.Listener
     override fun followUser(email: String) =
         mainViewModel.addFollow(email)
 
-    override fun unFollowUser(email: String) =
+    override fun unfollowUser(email: String) =
         mainViewModel.unfollowUser(email)
+
+    override fun navigateToUserDetails(email: String) =
+        (parentFragment as ExploreFragment).navigateToUserDetailsScreen(email)
 
 }

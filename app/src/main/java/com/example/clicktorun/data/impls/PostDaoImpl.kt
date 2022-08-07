@@ -103,9 +103,11 @@ class PostDaoImpl(
                 if (!it.isSuccessful || it.exception != null) {
                     Log.d("poly", it.exception?.message.toString())
                     it.exception?.printStackTrace()
+                    if (firebaseAuth.currentUser == null) return@addOnCompleteListener
                     imageLiveData.value = null
                     return@addOnCompleteListener
                 }
+                if (firebaseAuth.currentUser == null) return@addOnCompleteListener
                 imageLiveData.value = it.result.toString()
             }
         return imageLiveData

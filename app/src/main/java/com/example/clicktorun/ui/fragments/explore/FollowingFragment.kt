@@ -8,7 +8,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Post
-import com.example.clicktorun.data.models.User
 import com.example.clicktorun.databinding.FragmentFollowingBinding
 import com.example.clicktorun.ui.adapter.PostAdapter
 import com.example.clicktorun.ui.viewmodels.MainViewModel
@@ -96,14 +95,14 @@ class FollowingFragment : Fragment(R.layout.fragment_following), PostAdapter.Lis
                 }
             }
         }
-        mainViewModel.getCurrentUser()
+        mainViewModel.getUser()
         mainViewModel.getAllPosts()
     }
 
     override fun setSelectedPost(post: Post) {
         mainViewModel.setSelectedRun(post.run)
         mainViewModel.setSelectedRoute(post.route)
-        (parentFragment as ExploreFragment).navigateToDetailsScreen()
+        (parentFragment as ExploreFragment).navigateToRunDetailsScreen()
     }
 
     override fun hidePost(runId: String) =
@@ -112,7 +111,10 @@ class FollowingFragment : Fragment(R.layout.fragment_following), PostAdapter.Lis
     override fun followUser(email: String) =
         mainViewModel.addFollow(email)
 
-    override fun unFollowUser(email: String) =
+    override fun unfollowUser(email: String) =
         mainViewModel.unfollowUser(email)
+
+    override fun navigateToUserDetails(email: String) =
+        (parentFragment as ExploreFragment).navigateToUserDetailsScreen(email)
 
 }

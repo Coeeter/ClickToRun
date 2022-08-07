@@ -82,7 +82,7 @@ class YourRunsFragment : Fragment(R.layout.fragment_runs) {
                 binding.recyclerView.layoutManager = layoutManager
             }
         }
-        mainViewModel.getCurrentUser()
+        mainViewModel.getUser()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

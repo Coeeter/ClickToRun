@@ -39,7 +39,7 @@ class InsightsFragment : Fragment(R.layout.fragment_insights) {
                 populateGraphs(it)
             }
         }
-        mainViewModel.getCurrentUser()
+        mainViewModel.getUser()
     }
 
     private fun populateGraphs(list: List<Run>) {

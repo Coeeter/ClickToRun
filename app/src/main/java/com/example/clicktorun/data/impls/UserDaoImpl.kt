@@ -17,10 +17,10 @@ class UserDaoImpl(
     private val firebaseFirestore: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
 ) : UserDao {
-    override suspend fun getUser(): User? {
+    override suspend fun getUser(email: String?): User? {
         try {
             val documentSnapshot = firebaseFirestore.collection("users")
-                .document(firebaseAuth.currentUser!!.email!!)
+                .document(email ?: firebaseAuth.currentUser!!.email!!)
                 .get()
                 .await()
             if (!documentSnapshot.exists() ||
@@ -37,8 +37,10 @@ class UserDaoImpl(
                         if (!it.isSuccessful || it.exception != null) {
                             Log.d("poly", it.exception!!.message.toString())
                             it.exception!!.printStackTrace()
+                            if (firebaseAuth.currentUser == null) return@addOnCompleteListener
                             imageLiveData.value = null
                         }
+                        if (firebaseAuth.currentUser == null) return@addOnCompleteListener
                         imageLiveData.value = it.result.toString()
                     }
                 return User(documentSnapshot, imageLiveData)

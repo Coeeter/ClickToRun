@@ -72,7 +72,7 @@ class EditAccountFragment : Fragment(R.layout.fragment_edit_account) {
                     })
             }
         }
-        mainViewModel.getCurrentUser()
+        mainViewModel.getUser()
         authViewModel.authState.observe(viewLifecycleOwner) {
             when (it) {
                 is AuthViewModel.AuthState.Loading -> {

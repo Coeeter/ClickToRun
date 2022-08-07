@@ -99,7 +99,7 @@ class AuthViewModel @Inject constructor(
         val hashMap = HashMap<String, Any>()
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            val currentUser = userRepository.getCurrentUser()
+            val currentUser = userRepository.getUser()
             if (!validate && username != currentUser!!.username)
                 hashMap["username"] = username!!
             if (!validate && height!!.toDouble() != currentUser!!.heightInMetres * 100)
@@ -157,7 +157,7 @@ class AuthViewModel @Inject constructor(
 
     suspend fun getCurrentUserState() = hashMapOf(
         "firebaseUser" to currentUser,
-        "firestoreUser" to userRepository.getCurrentUser()
+        "firestoreUser" to userRepository.getUser()
     )
 
     fun signOut() = authRepository.signOut()

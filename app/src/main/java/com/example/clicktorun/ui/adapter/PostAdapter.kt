@@ -22,6 +22,7 @@ class PostAdapter(
 
     var postList = listOf<Post>()
     var followingList = listOf<User>()
+    var isProfileDetail = false
 
     class ViewHolder(
         val binding: RecyclerviewPostItemBinding,
@@ -42,7 +43,46 @@ class PostAdapter(
         if (followingList.map { it.email }.contains(post.run.email)) {
             isFollowingUser = true
         }
+
+        val callback = object : Callback {
+            override fun onSuccess() {
+                holder.binding.runImageProgress.isVisible = false
+            }
+
+            override fun onError() {
+                holder.binding.runImageProgress.isVisible = false
+                holder.binding.runImage.setImageResource(R.drawable.ic_baseline_directions_run_24)
+            }
+        }
+
+        post.lightModeImage?.observe(lifecycleOwner) {
+            it ?: return@observe
+            if (holder.binding.root.context.isNightModeEnabled()) return@observe
+            Picasso.with(holder.binding.root.context).load(it).into(holder.binding.runImage, callback)
+        }
+
+        post.darkModeImage?.observe(lifecycleOwner) {
+            it ?: return@observe
+            if (!holder.binding.root.context.isNightModeEnabled()) return@observe
+            Picasso.with(holder.binding.root.context).load(it).into(holder.binding.runImage, callback)
+        }
+
+        val timeStarted = post.run.timeEnded - post.run.timeTakenInMilliseconds
+        holder.binding.timeStartedTxt.text = "${timeStarted.getTime()} - ${timeStarted.getDate()}"
+
+        holder.binding.root.setOnClickListener {
+            listener.setSelectedPost(post)
+        }
+        if (isProfileDetail) {
+            holder.binding.userDetails.isVisible = false
+            holder.binding.followBtn.isVisible = false
+            holder.binding.hidePostBtn.isVisible = false
+            return
+        }
         holder.binding.apply {
+            userDetails.isVisible = true
+            followBtn.isVisible = true
+            hidePostBtn.isVisible = false
             post.profileImage?.observe(lifecycleOwner) {
                 profileProgress.isVisible = true
                 it ?: return@observe run {
@@ -60,29 +100,7 @@ class PostAdapter(
                     }
                 })
             }
-            val callback = object : Callback {
-                override fun onSuccess() {
-                    runImageProgress.isVisible = false
-                }
-
-                override fun onError() {
-                    runImageProgress.isVisible = false
-                    runImage.setImageResource(R.drawable.ic_baseline_directions_run_24)
-                }
-            }
-            post.lightModeImage?.observe(lifecycleOwner) {
-                it ?: return@observe
-                if (root.context.isNightModeEnabled()) return@observe
-                Picasso.with(root.context).load(it).into(runImage, callback)
-            }
-            post.darkModeImage?.observe(lifecycleOwner) {
-                it ?: return@observe
-                if (!root.context.isNightModeEnabled()) return@observe
-                Picasso.with(root.context).load(it).into(runImage, callback)
-            }
             username.text = post.username
-            val timeStarted = post.run.timeEnded - post.run.timeTakenInMilliseconds
-            timeStartedTxt.text = "${timeStarted.getTime()} - ${timeStarted.getDate()}"
             if (post.isCurrentUser) {
                 followBtn.isVisible = false
                 hidePostBtn.isVisible = true
@@ -98,13 +116,13 @@ class PostAdapter(
             followBtn.setOnClickListener {
                 if (post.isCurrentUser) return@setOnClickListener
                 if (isFollowingUser) {
-                    listener.unFollowUser(post.run.email!!)
+                    listener.unfollowUser(post.run.email!!)
                     return@setOnClickListener
                 }
                 listener.followUser(post.run.email!!)
             }
-            root.setOnClickListener {
-                listener.setSelectedPost(post)
+            userDetails.setOnClickListener {
+                listener.navigateToUserDetails(post.run.email!!)
             }
         }
     }
@@ -115,7 +133,8 @@ class PostAdapter(
         fun setSelectedPost(post: Post)
         fun hidePost(runId: String)
         fun followUser(email: String)
-        fun unFollowUser(email: String)
+        fun unfollowUser(email: String)
+        fun navigateToUserDetails(email: String)
     }
 
 }

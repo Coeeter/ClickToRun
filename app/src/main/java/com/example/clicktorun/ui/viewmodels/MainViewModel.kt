@@ -61,9 +61,9 @@ class MainViewModel @Inject constructor(
 
     fun getRunList(email: String) = runRepository.getRunList(email)
 
-    fun getCurrentUser() {
+    fun getUser(email: String? = null) {
         viewModelScope.launch {
-            _user.postValue(userRepository.getCurrentUser())
+            _user.postValue(userRepository.getUser(email))
         }
     }
 
@@ -124,11 +124,13 @@ class MainViewModel @Inject constructor(
 
     fun deleteAllPositions() {
         viewModelScope.launch {
-            runRepository.deleteAllPositions(userRepository.getCurrentUser()!!.email)
+            runRepository.deleteAllPositions(userRepository.getUser()!!.email)
         }
     }
 
     fun getAllPosts() = postRepository.getAllPosts()
+
+    fun getAllPostsOfUser(email: String) = postRepository.getPostOfUser(email)
 
     fun insertPost(run: Run, route: List<List<Position>>) {
         viewModelScope.launch {
@@ -137,7 +139,7 @@ class MainViewModel @Inject constructor(
                 Post(
                     run,
                     route,
-                    userRepository.getCurrentUser()!!.username,
+                    userRepository.getUser()!!.username,
                     true
                 )
             )
@@ -232,7 +234,7 @@ class MainViewModel @Inject constructor(
             _followingState.value = FollowingState.Loading
             val insertResults = followRepository.insertFollow(
                 userBeingFollowedEmail,
-                userRepository.getCurrentUser()!!.email
+                userRepository.getUser()!!.email
             )
             if (!insertResults) return@launch _followingState.setValue(
                 FollowingState.Failure(
@@ -250,7 +252,7 @@ class MainViewModel @Inject constructor(
             _followingState.value = FollowingState.Loading
             val removeResult = followRepository.deleteFollow(
                 userToUnfollow,
-                userRepository.getCurrentUser()!!.email
+                userRepository.getUser()!!.email
             )
             if (!removeResult) return@launch _followingState.setValue(
                 FollowingState.Failure(
@@ -267,7 +269,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _followingState.value = FollowingState.Loading
             val removeResult = followRepository.deleteAllFollowLinksRelatedToUser(
-                userRepository.getCurrentUser()!!.email
+                userRepository.getUser()!!.email
             )
             if (!removeResult) return@launch _followingState.setValue(
                 FollowingState.Failure(
