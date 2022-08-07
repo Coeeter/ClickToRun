@@ -12,18 +12,14 @@ ClickToRun is an android native app built using kotlin with MVVM architecture wi
 - Coroutine extensions for easier asynchronous coding
 - Lifecycle extensions for MVVM architecture
 
-## The features implemented into ClickToRun so far are:
+## The features implemented into ClickToRun:
 - User authentication using Firebase Authentication
 - Collected details of user and storing in firestore
 - Tracking runs using a foreground service
 - Saving runs to Local Database
 - Dark Mode and Landscape compatible
-
-## The features which I hope to integrate into ClickToRun soon are:
-- Updating and deleting of data
-- Steps counter, to count how many steps during run
-- An Explore page, where Users can share their runs to other users
-- A chats function where users can chat with each other
+- An explore page, where users can share their runs to other users
+- An user profile screen to see posts, followers and who user is following
 
 ## Installation:
 If you want to try using the app, you can download it as a zip folder from [here](https://github.com/Coeeter/ClickToRun) or clone it from [here](https://github.com/Coeeter/ClickToRun.git). When running the app ensure you add the line below by using your own Google Maps API key to the `local.properties` file
