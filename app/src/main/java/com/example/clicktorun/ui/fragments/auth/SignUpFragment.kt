@@ -83,6 +83,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
                 }
                 is AuthViewModel.AuthState.Success -> binding.apply {
                     progress.visibility = View.GONE
+                    authViewModel.signOut()
                     resetForm()
                     createSnackbar()
                 }

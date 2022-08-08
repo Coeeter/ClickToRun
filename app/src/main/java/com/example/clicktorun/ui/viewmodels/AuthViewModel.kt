@@ -36,33 +36,37 @@ class AuthViewModel @Inject constructor(
     val currentUser = authRepository.getAuthUser()
 
     fun logIn() {
-        val emailCheck = !validateEmailFields(email)
-        val passwordCheck = !validatePasswordFields(password, null)
-        if (emailCheck || passwordCheck) return
-        _authState.postValue(AuthState.Loading)
-        authRepository.login(email!!, password!!)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful)
-                    return@addOnCompleteListener _authState.postValue(AuthState.Success)
-                task.exception?.run {
-                    _authState.postValue(AuthState.FireBaseFailure(message))
-                }
+        viewModelScope.launch {
+            val emailCheck = !validateEmailFields(email)
+            val passwordCheck = !validatePasswordFields(password, null)
+            if (emailCheck || passwordCheck) return@launch
+            _authState.value = AuthState.Loading
+            try {
+                authRepository.login(email!!, password!!).await()
+                _authState.value = AuthState.Success
+                _authState.value = AuthState.Idle
+            } catch (e: Exception) {
+                _authState.value = AuthState.FireBaseFailure(e.message)
+                _authState.value = AuthState.Idle
             }
+        }
     }
 
     fun signUp() {
-        val emailCheck = !validateEmailFields(email)
-        val passwordCheck = !validatePasswordFields(password, confirmPassword, true)
-        if (emailCheck || passwordCheck) return
-        _authState.postValue(AuthState.Loading)
-        authRepository.signUp(email!!, password!!)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful)
-                    return@addOnCompleteListener _authState.postValue(AuthState.Success)
-                task.exception?.run {
-                    _authState.postValue(AuthState.FireBaseFailure(message))
-                }
+        viewModelScope.launch {
+            val emailCheck = !validateEmailFields(email)
+            val passwordCheck = !validatePasswordFields(password, confirmPassword, true)
+            if (emailCheck || passwordCheck) return@launch
+            _authState.value = AuthState.Loading
+            try {
+                authRepository.signUp(email!!, password!!).await()
+                _authState.value = AuthState.Success
+                _authState.value = AuthState.Idle
+            } catch (e: Exception) {
+                _authState.value = AuthState.FireBaseFailure(e.message)
+                _authState.value = AuthState.Idle
             }
+        }
     }
 
     fun sendPasswordResetLinkToEmail() {
@@ -155,7 +159,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentUserState(){
+    fun getCurrentUserState() {
         viewModelScope.launch {
             val fireStoreUser = userRepository.getUser()
             if (fireStoreUser == null) {
@@ -244,8 +248,8 @@ class AuthViewModel @Inject constructor(
         object Idle : AuthState()
         object Loading : AuthState()
         object Success : AuthState()
-        object FireStoreUserNotFound: AuthState()
-        object FirestoreUserFound: AuthState()
+        object FireStoreUserNotFound : AuthState()
+        object FirestoreUserFound : AuthState()
         class InvalidEmail(val message: String) : AuthState()
         class InvalidPassword(val message: String) : AuthState()
         class InvalidConfirmPassword(val message: String) : AuthState()
