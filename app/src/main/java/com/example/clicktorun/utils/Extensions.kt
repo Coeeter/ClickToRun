@@ -7,14 +7,20 @@ import android.content.res.Configuration
 import android.location.Location
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import com.example.clicktorun.R
 import com.example.clicktorun.data.models.Position
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -125,4 +131,50 @@ fun List<List<Position>>.convertToLatLng(): List<List<LatLng>> {
             pos.getLatLng()
         }
     }
+}
+
+fun LiveData<String?>?.loadImage(
+    lifecycleOwner: LifecycleOwner,
+    imageView: ImageView,
+    progress: View,
+    default: Boolean = true,
+    callback: (() -> Unit)? = null
+) {
+    if (this != null) {
+        observe(lifecycleOwner) {
+            if (it == null) {
+                if (callback != null) {
+                    callback()
+                }
+                progress.isVisible = false
+                if (!default) return@observe
+                imageView.setImageResource(R.drawable.ic_baseline_person_24)
+            }
+            Picasso.with(imageView.context)
+                .load(it)
+                .into(imageView, object : Callback {
+                    override fun onSuccess() {
+                        progress.isVisible = false
+                        if (callback == null) return
+                        callback()
+                    }
+
+                    override fun onError() {
+                        progress.isVisible = false
+                        if (callback != null) {
+                            callback()
+                        }
+                        if (!default) return
+                        imageView.setImageResource(R.drawable.ic_baseline_person_24)
+                    }
+                })
+        }
+        return
+    }
+    if (callback != null) {
+        callback()
+    }
+    progress.isVisible = false
+    if (!default) return
+    imageView.setImageResource(R.drawable.ic_baseline_person_24)
 }

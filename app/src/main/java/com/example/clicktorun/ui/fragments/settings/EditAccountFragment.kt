@@ -13,6 +13,7 @@ import com.example.clicktorun.databinding.FragmentEditAccountBinding
 import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.ui.viewmodels.MainViewModel
 import com.example.clicktorun.utils.createSnackBar
+import com.example.clicktorun.utils.loadImage
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -49,28 +50,11 @@ class EditAccountFragment : Fragment(R.layout.fragment_edit_account) {
                 weightInput.editText?.setText("${it.weightInKilograms}")
                 btnSubmit.isEnabled = true
             }
-            it.profileImage
-                ?: return@observe binding.imageProgress.setVisibility(View.GONE).run {
-                    binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                }
-            it.profileImage.observe(viewLifecycleOwner) { image ->
-                if (image == null) {
-                    binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                    binding.imageProgress.visibility = View.GONE
-                    return@observe
-                }
-                Picasso.with(context).load(image)
-                    .into(binding.profileImage, object : Callback {
-                        override fun onSuccess() {
-                            binding.imageProgress.visibility = View.GONE
-                        }
-
-                        override fun onError() {
-                            binding.imageProgress.visibility = View.GONE
-                            binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                        }
-                    })
-            }
+            it.profileImage.loadImage(
+                viewLifecycleOwner,
+                binding.profileImage,
+                binding.imageProgress
+            )
         }
         mainViewModel.getUser()
         authViewModel.authState.observe(viewLifecycleOwner) {

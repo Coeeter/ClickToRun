@@ -12,6 +12,7 @@ import com.example.clicktorun.databinding.RecyclerviewPostItemBinding
 import com.example.clicktorun.utils.getDate
 import com.example.clicktorun.utils.getTime
 import com.example.clicktorun.utils.isNightModeEnabled
+import com.example.clicktorun.utils.loadImage
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
@@ -83,23 +84,11 @@ class PostAdapter(
             userDetails.isVisible = true
             followBtn.isVisible = true
             hidePostBtn.isVisible = false
-            post.profileImage?.observe(lifecycleOwner) {
-                profileProgress.isVisible = true
-                it ?: return@observe run {
-                    profileProgress.isVisible = false
-                    profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                }
-                Picasso.with(root.context).load(it).into(profileImage, object : Callback {
-                    override fun onSuccess() {
-                        profileProgress.isVisible = false
-                    }
-
-                    override fun onError() {
-                        profileProgress.isVisible = false
-                        profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                    }
-                })
-            }
+            post.profileImage.loadImage(
+                lifecycleOwner,
+                profileImage,
+                profileProgress
+            )
             username.text = post.username
             if (post.isCurrentUser) {
                 followBtn.isVisible = false

@@ -16,9 +16,8 @@ import com.example.clicktorun.ui.activities.AuthActivity
 import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.ui.viewmodels.MainViewModel
 import com.example.clicktorun.utils.ACTION_NAVIGATE_TO_LOGIN
+import com.example.clicktorun.utils.loadImage
 import com.example.clicktorun.utils.startActivityWithAnimation
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,43 +37,21 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private fun setUpObservers() {
         mainViewModel.user.observe(viewLifecycleOwner) {
-            binding.imageProgress.visibility = View.VISIBLE
             user = it
             it ?: return@observe
             binding.username.text = user!!.username
-            if (user!!.profileImage == null) {
-                binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                binding.imageProgress.visibility = View.GONE
-                isLoading = false
-                return@observe
-            }
-            user!!.profileImage?.observe(viewLifecycleOwner) { image ->
-                if (image == null) {
-                    binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                    binding.imageProgress.isVisible = false
-                    isLoading = false
-                    return@observe
-                }
-                Picasso.with(requireContext())
-                    .load(image)
-                    .into(binding.profileImage, object : Callback {
-                        override fun onSuccess() {
-                            isLoading = false
-                            binding.imageProgress.visibility = View.GONE
-                        }
-
-                        override fun onError() {
-                            isLoading = false
-                            binding.imageProgress.visibility = View.GONE
-                            binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-                        }
-                    })
-            }
+            user!!.profileImage.loadImage(
+                viewLifecycleOwner,
+                binding.profileImage,
+                binding.imageProgress,
+                true,
+            ) { isLoading = false }
         }
         mainViewModel.getUser()
     }
 
     private fun setUpListeners() {
+        binding.imageProgress.isVisible = true
         binding.btnSignOut.setOnClickListener {
             if (RunService.isTracking.value == true) return@setOnClickListener
             authViewModel.signOut()

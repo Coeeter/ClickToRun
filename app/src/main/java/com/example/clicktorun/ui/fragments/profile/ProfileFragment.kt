@@ -1,12 +1,12 @@
 package com.example.clicktorun.ui.fragments.profile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +17,7 @@ import com.example.clicktorun.ui.adapter.PostAdapter
 import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.ui.viewmodels.MainViewModel
 import com.example.clicktorun.utils.createSnackBar
+import com.example.clicktorun.utils.loadImage
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +39,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile), PostAdapter.Listene
     private fun setUpUiListeners() {
         binding.imageProgress.isVisible = true
         binding.mainProgress.isVisible = true
+        binding.recyclerProgress.isVisible = true
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
@@ -101,9 +103,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile), PostAdapter.Listene
             }
         }
         mainViewModel.getAllPostsOfUser(arguments.email).observe(viewLifecycleOwner) { postList ->
+            binding.recyclerProgress.isVisible = true
             binding.noPosts.isVisible = false
             if (postList.isEmpty()) {
                 binding.noPosts.isVisible = true
+                binding.recyclerProgress.isVisible = false
                 return@observe
             }
             binding.recyclerView.adapter = PostAdapter(viewLifecycleOwner, this).apply {
@@ -113,6 +117,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile), PostAdapter.Listene
             }
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
             binding.mainProgress.isVisible = false
+            binding.recyclerProgress.isVisible = false
         }
         mainViewModel.followingState.observe(viewLifecycleOwner) {
             when (it) {
@@ -129,29 +134,17 @@ class ProfileFragment : Fragment(R.layout.fragment_profile), PostAdapter.Listene
                         okayAction = true,
                     ).show()
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
         mainViewModel.user.observe(viewLifecycleOwner) { user ->
             user ?: return@observe
-            binding.imageProgress.isVisible = false
-            binding.profileImage.setImageResource(R.drawable.ic_baseline_person_24)
-            if (user.profileImage != null) {
-                binding.imageProgress.isVisible = true
-                user.profileImage.observe(viewLifecycleOwner) {
-                    Picasso.with(requireContext())
-                        .load(it)
-                        .into(binding.profileImage, object : Callback {
-                            override fun onSuccess() {
-                                binding.imageProgress.isVisible = false
-                            }
-
-                            override fun onError() {
-                                binding.imageProgress.isVisible = false
-                            }
-                        })
-                }
-            }
+            user.profileImage.loadImage(
+                viewLifecycleOwner,
+                binding.profileImage,
+                binding.imageProgress
+            )
             binding.username.text = user.username
             binding.toolbar.title = "${user.username}'s profile"
             binding.mainProgress.isVisible = false
