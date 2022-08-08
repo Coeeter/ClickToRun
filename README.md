@@ -21,6 +21,9 @@ ClickToRun is an android native app built using kotlin with MVVM architecture wi
 - An explore page, where users can share their runs to other users
 - An user profile screen to see posts, followers and who user is following
 
+## Demonstration
+You can watch the demo of this app [here](https://youtu.be/LX3llOyXfSU)
+
 ## Installation:
 If you want to try using the app, you can download it as a zip folder from [here](https://github.com/Coeeter/ClickToRun) or clone it from [here](https://github.com/Coeeter/ClickToRun.git). When running the app ensure you add the line below by using your own Google Maps API key to the `local.properties` file
 ```properties
