@@ -155,10 +155,16 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    suspend fun getCurrentUserState() = hashMapOf(
-        "firebaseUser" to currentUser,
-        "firestoreUser" to userRepository.getUser()
-    )
+    fun getCurrentUserState(){
+        viewModelScope.launch {
+            val fireStoreUser = userRepository.getUser()
+            if (fireStoreUser == null) {
+                _authState.value = AuthState.FireStoreUserNotFound
+                return@launch
+            }
+            _authState.value = AuthState.FirestoreUserFound
+        }
+    }
 
     fun signOut() = authRepository.signOut()
 
@@ -238,6 +244,8 @@ class AuthViewModel @Inject constructor(
         object Idle : AuthState()
         object Loading : AuthState()
         object Success : AuthState()
+        object FireStoreUserNotFound: AuthState()
+        object FirestoreUserFound: AuthState()
         class InvalidEmail(val message: String) : AuthState()
         class InvalidPassword(val message: String) : AuthState()
         class InvalidConfirmPassword(val message: String) : AuthState()

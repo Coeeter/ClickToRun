@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private lateinit var binding: FragmentSignUpBinding
     private val authViewModel: AuthViewModel by viewModels()
+    private var snackbar: Snackbar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,6 +48,10 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private fun setUpListeners() {
         binding.apply {
             toolbar.setNavigationOnClickListener {
+                if (authViewModel.authState.value is AuthViewModel.AuthState.Success) {
+                    snackbar?.dismiss()
+                    return@setNavigationOnClickListener
+                }
                 findNavController().popBackStack()
             }
             linkLogin.setOnClickListener {
@@ -78,6 +83,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
                 }
                 is AuthViewModel.AuthState.Success -> binding.apply {
                     progress.visibility = View.GONE
+                    resetForm()
                     createSnackbar()
                 }
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
@@ -120,21 +126,33 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     }
 
     private fun createSnackbar() {
-        binding.root.createSnackBar(
-            "Successfully created account!",
+        snackbar = binding.root.createSnackBar(
+            message = "Created account successfully",
+            okayAction = true
         ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                findNavController().popBackStack()
+            }
+
             override fun onShown(transientBottomBar: Snackbar?) {
                 super.onShown(transientBottomBar)
                 CoroutineScope(Dispatchers.Main).launch {
                     delay(3000L)
-                    if (authViewModel.authState.value is AuthViewModel.AuthState.Success) return@launch
-                    findNavController().popBackStack()
+                    if (transientBottomBar?.isShown == true)
+                        transientBottomBar.dismiss()
                 }
             }
+        })
+        snackbar?.show()
+    }
 
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                super.onDismissed(transientBottomBar, event)
-            }
-        }).show()
+    private fun resetForm() {
+        binding.emailInput.editText?.setText("")
+        binding.passwordInput.editText?.setText("")
+        binding.confirmPasswordInput.editText?.setText("")
+        binding.emailInput.clearFocus()
+        binding.passwordInput.clearFocus()
+        binding.confirmPasswordInput.clearFocus()
     }
 }

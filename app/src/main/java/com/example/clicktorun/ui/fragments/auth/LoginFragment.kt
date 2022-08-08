@@ -9,15 +9,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.clicktorun.R
 import com.example.clicktorun.databinding.FragmentLoginBinding
+import com.example.clicktorun.ui.activities.AuthActivity
 import com.example.clicktorun.ui.activities.MainActivity
 import com.example.clicktorun.ui.viewmodels.AuthViewModel
 import com.example.clicktorun.utils.createSnackBar
 import com.example.clicktorun.utils.hideKeyboard
 import com.example.clicktorun.utils.startActivityWithAnimation
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -66,8 +64,25 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 is AuthViewModel.AuthState.Loading -> binding.apply {
                     progress.visibility = View.VISIBLE
                 }
-                is AuthViewModel.AuthState.Success -> binding.apply {
-                    checkUserStatus()
+                is AuthViewModel.AuthState.Success -> {
+                    authViewModel.getCurrentUserState()
+                }
+                is AuthViewModel.AuthState.FireStoreUserNotFound -> {
+                    try {
+                        findNavController().navigate(
+                            LoginFragmentDirections.loginToUserDetails()
+                        )
+                    } catch (e: Exception) {
+                        val activity = requireActivity() as AuthActivity
+                        activity.navigateToUserDetails()
+                    }
+                }
+                is AuthViewModel.AuthState.FirestoreUserFound -> {
+                    Intent(requireContext(), MainActivity::class.java).run {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        requireActivity().startActivityWithAnimation(this)
+                        requireActivity().finish()
+                    }
                 }
                 is AuthViewModel.AuthState.FireBaseFailure -> binding.apply {
                     progress.visibility = View.GONE
@@ -93,20 +108,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 else -> binding.apply {
                     progress.visibility = View.GONE
                 }
-            }
-        }
-    }
-
-    private fun checkUserStatus() {
-        CoroutineScope(Dispatchers.Main).launch {
-            val state = authViewModel.getCurrentUserState()
-            binding.progress.visibility = View.GONE
-            if (state["firestoreUser"] == null)
-                return@launch findNavController().navigate(LoginFragmentDirections.loginToUserDetails())
-            Intent(requireContext(), MainActivity::class.java).run {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                requireActivity().startActivityWithAnimation(this)
-                requireActivity().finish()
             }
         }
     }

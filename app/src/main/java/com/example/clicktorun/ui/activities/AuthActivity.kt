@@ -22,4 +22,10 @@ class AuthActivity : AppCompatActivity() {
                 AuthNavigationDirections.mainToLogin()
             )
     }
+
+    fun navigateToUserDetails() {
+        findNavController(R.id.authFragmentContainer).navigate(
+            AuthNavigationDirections.mainToUserDetails()
+        )
+    }
 }

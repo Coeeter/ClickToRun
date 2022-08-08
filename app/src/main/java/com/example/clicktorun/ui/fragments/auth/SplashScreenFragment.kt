@@ -23,12 +23,17 @@ import kotlinx.coroutines.launch
 class SplashScreenFragment : Fragment(R.layout.fragment_splash_screen),
     Animation.AnimationListener {
     private lateinit var binding: FragmentSplashScreenBinding
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSplashScreenBinding.bind(view)
         if (requireActivity().intent.action == ACTION_NAVIGATE_TO_LOGIN) return
-        val authViewModel: AuthViewModel by viewModels()
+        setUpViewModelListeners()
+        startAnimation()
+    }
+
+    private fun startAnimation() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(2000L)
             val animation = AnimationUtils.loadAnimation(
@@ -39,20 +44,34 @@ class SplashScreenFragment : Fragment(R.layout.fragment_splash_screen),
             binding.brand.startAnimation(animation)
             delay(150L)
             binding.appName.visibility = View.VISIBLE
-            handleUserState(authViewModel.getCurrentUserState())
+            delay(300L)
+            if (authViewModel.currentUser == null) {
+                findNavController().navigate(SplashScreenFragmentDirections.splashToLogin())
+                return@launch
+            }
+            authViewModel.getCurrentUserState()
         }
     }
 
-    private fun handleUserState(state: Map<String, Any?>) {
-        if (state["firebaseUser"] == null)
-            return findNavController().navigate(SplashScreenFragmentDirections.splashToLogin())
-        if (state["firestoreUser"] == null)
-            return findNavController().navigate(SplashScreenFragmentDirections.splashToUserDetails())
-        Intent(requireContext(), MainActivity::class.java).run {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(this)
-            requireActivity().finish()
-            requireActivity().overridePendingTransition(0, 0)
+    private fun setUpViewModelListeners() {
+        authViewModel.authState.observe(viewLifecycleOwner) {
+            when (it) {
+                is AuthViewModel.AuthState.FirestoreUserFound -> {
+                    Intent(requireContext(), MainActivity::class.java).run {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(this)
+                        requireActivity().finish()
+                        requireActivity().overridePendingTransition(0, 0)
+                    }
+                }
+                is AuthViewModel.AuthState.FireStoreUserNotFound -> {
+                    findNavController().navigate(
+                        SplashScreenFragmentDirections.splashToUserDetails()
+                    )
+                }
+                else -> {
+                }
+            }
         }
     }
 
